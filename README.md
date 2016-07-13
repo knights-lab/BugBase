@@ -40,7 +40,7 @@ run.bugbase.r -h
 BugBase comes with a test dataset in the bugbase/doc/data directory, to analyze this data set you would type the following:
 
 ```
-run.bugbase.r -i ~/lib/BugBase/doc/data/HMP_s15.txt -m ~/lib/BugBase/doc/data/HMP_map.txt -c HMPBODYSUBSITE -o output
+run.bugbase.r -i $BUGBASE_PATH/doc/data/HMP_s15.txt -m $BUGBASE_PATH/doc/data/HMP_map.txt -c HMPBODYSUBSITE -o output
 ```
 
 You can view other options with `run.bugbase.r -h`.
