@@ -59,7 +59,7 @@ BugBase has one main command, `run.bugbase.r`, that will:
 
 <dl>
 	<dt>Required</dt>
-	<dd> -i     input OTU table, picked against the GreenGenes database (BIOM format, json version)
+	<dd> -i     input OTU table, picked against the GreenGenes database (.txt or .biom (json))
 	<dd> -m     mapping file (tab-delimitted text file)
 	<dd> -c     map column header to plot by (which column denotes treatment groups)
 	<dd> -o     output directory name
