@@ -21,10 +21,7 @@ These R packages can be installed with this command in R: `install.packages(‘p
 * biom
 
 ### Installation
-To get the current version of bugbase, download and extract this file:
-https://github.com/danknights/bugbase/archive/master.zip
-
-Then add these paths to your `~/.bash_profile` file. This is what is in an example `~/.bash_profile` file looks like:
+You can download BugBase here, and then add these paths to your `~/.bash_profile` file. This is what is in an example `~/.bash_profile` modification looks like:
 
 ```
 export BUGBASE_PATH=/Users/me/lib/BugBase/
@@ -41,7 +38,10 @@ run.bugbase.r -h
 
 ### Demo
 BugBase comes with a test dataset in the bugbase/doc/data directory, to analyze this data set you would type the following:
-`run.bugbase.r -i ~/lib/BugBase/doc/data/HMP_s15.biom -m ~/lib/BugBase/doc/data/HMP_map.txt -c HMPBODYSUBSITE -o output`
+
+```
+run.bugbase.r -i ~/lib/BugBase/doc/data/HMP_s15.biom -m ~/lib/BugBase/doc/data/HMP_map.txt -c HMPBODYSUBSITE -o output
+```
 
 You can view other options with `run.bugbase.r -h`.
 
