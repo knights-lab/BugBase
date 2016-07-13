@@ -1,4 +1,4 @@
-#!/usr/bin/Rscript
+#!/usr/bin/env Rscript
 # Runs BugBase analysis:
 # - Uses a single-cell approach to predict microbiome phenotypes
 # - plots phenotype relative abundances
