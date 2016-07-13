@@ -9,8 +9,8 @@ Follow the website directions to install:
 * R (http://cran.r-project.org)
 
 These R packages can be installed with this command in R: `install.packages(‘package’)`
-* APE
-* Optparse
+* ape
+* optparse
 * beeswarm
 * RColorBrewer
 * reshape2
