@@ -43,8 +43,8 @@
 		}
 		
 		#print the number of samples matching between the otu table and map
-		cat("\nThe number of samples matching between the otu table and mapping file:")
-		cat("\n",length(intersect(rownames(map),colnames(otu_table)))[1],"\n")
+		# cat("\nThe number of samples matching between the otu table and mapping file:")
+		# cat("\n",length(intersect(rownames(map),colnames(otu_table)))[1],"\n")
 
 		#define treatment groups
 		if(is.null(groups)){
@@ -90,10 +90,10 @@
 		new_otu <- droplevels(as.data.frame(otu_table[,intersect_btwn]))
 		
 		#print the groups to be tested
-		cat("\nThe number of samples in each group are:")
-		print(table(new_map[,map_column]))
-		map <- new_map
-		otu_table <- new_otu
+		# cat("\nThe number of samples in each group are:")
+		# print(table(new_map[,map_column]))
+		# map <- new_map
+		# otu_table <- new_otu
 	}
 	
 	return(list(

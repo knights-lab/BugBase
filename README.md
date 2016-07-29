@@ -24,11 +24,11 @@ These R packages can be installed with this command in R: `install.packages(‘p
 You can download BugBase here, and then add these paths to your `~/.bash_profile` file. This is what is in an example `~/.bash_profile` modification looks like:
 
 ```
-export BUGBASE_PATH=/Users/me/lib/BugBase/
-export PATH=$PATH:/Users/me/lib/BugBase/bin
+export BUGBASE_PATH=/Path/to/my/BugBase/
+export PATH=$PATH:$BUGBASE_PATH/bin
 ```
 
-Note: you will need change the paths to match your system. You might need to put it in ~/.bashrc instead of ~/.bash_profile depending on your system. After adding these paths to the .bash_profile or ~/.bashrc, reopen the terminal or login again.
+Note: you will need change the paths to match your system and which directory you have downloaded BugBase into. You might need to put it in ~/.bashrc instead of ~/.bash_profile depending on your system. After adding these paths to the .bash_profile or ~/.bashrc, reopen the terminal or login again.
 
 To check your install type the following in the command line.  It should print the options available to run BugBase.
 

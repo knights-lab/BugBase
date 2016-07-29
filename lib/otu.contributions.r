@@ -27,10 +27,11 @@
   
 	#keep only otus in the gg taxonomy table that are in the otu table
 	#these tables will be in the same otu order
+	#OTUs are now rows
 	otu_table <- t(otu_table)
 	otus_keep <- intersect(rownames(otu_table),rownames(gg_taxonomy))
 	gg_taxonomy <- gg_taxonomy[otus_keep,, drop=F]
-
+	
 	#subset the gg taxonomy to the level specified (default=2)
 	names_split <- array(dim=c(length(gg_taxonomy[,1]), 7))
 	otu_names <- as.character(gg_taxonomy[,1])
@@ -52,15 +53,19 @@
 		}
 	}
 
+	#store the full otu_table
+	otu_table1 <- otu_table
+
 	#add taxonomy as the rownames in the otu table
 	rownames(otu_table) <- names_split[,taxa_level]
   
 	#aggregate to the same taxa
+	#you must t() again, to have samples as columns
 	otu_table <- t(sapply(by(otu_table,rownames(otu_table),colSums),identity))
-
+	
 	#ensure same order of samples in map and otu table
 	map <- map[colnames(otu_table),]
-	
+
 	#set colors for plotting and legend creation
 	#get palette 1 from R ColorBrewer
 	cols <- colorRampPalette(brewer.pal(9,'Set1'))
@@ -83,6 +88,8 @@
 	legend_info$X <- as.numeric(legend_info$X)
 	legend_info$Y <- as.numeric(legend_info$Y)
 	legend_info$Color <- as.character(legend_info$Color)
+	#Add a space before name so plot legend looks nice
+	legend_info$Taxa <- sub("^", " ", legend_info$Taxa ) 
 
 	#name pdf
 	taxa_legend <- c("taxa_legend.pdf")
@@ -106,54 +113,69 @@
 	  
 	#create taxa summaries
 	for(x in 1:length(traits)){
-	trait <- traits[x]
+		trait <- traits[x]
 
-	#multiple the otu_table by the boolean table for otus contributing to 
-	#   the trait
-	positive_otu_table <- sweep(otu_table, 2, otus_contributing[,x],"*")
+		#multiple the full otu_table by the boolean table for otus contributing
+		#   to the trait
+		positive_otu_table <- t(sweep(t(otu_table1), 2, 
+									otus_contributing[,x],"*"))
 
-	#melt the otu_table by sample id
-	melted_otu_table <- melt(positive_otu_table)
-	colnames(melted_otu_table) <- c("Taxa", "SampleID", "Count")
-
-	#merge the otu table and mapping file
-	map$SampleID <- rownames(map)
-	melted_otu_table <- merge(melted_otu_table, map, by="SampleID")
+		#add taxonomy as the rownames in the otu table
+		rownames(positive_otu_table) <- names_split[,taxa_level]
+	  
+		#aggregate to the same taxa
+		#you must t() again, to have samples as columns
+		positive_otu_table <- t(sapply(by(positive_otu_table,
+								rownames(positive_otu_table),colSums),identity))
 		
-	#collapse by groups in the map column
-	group_collapsed_otus <- ddply(melted_otu_table, .(Taxa,melted_otu_table[,map_column]), 
-										summarize, Count = mean(Count))
-	colnames(group_collapsed_otus)[2] <- map_column
-
-	##call taxa that are less than 1% of the population "Other"
-	#group_collapsed_otus[] <- lapply(group_collapsed_otus, as.character)
-	#group_collapsed_otus[which(group_collapsed_otus$Count < 0.01),"Taxa"] <- "Other"
-	#group_collapsed_otus$Count <- as.numeric(group_collapsed_otus$Count)
-	#re-collapse to group the 'Others'
-	#group_collapsed_otus <- ddply(group_collapsed_otus, 
-									#.(Taxa,group_collapsed_otus[,2]), 
-									#summarize, Count = sum(Count))
-
-	#make the plot
-	taxa_plot <- NULL
-	taxa_plot <- ggplot(group_collapsed_otus, aes_string(x = map_column, y = "Count", fill="Taxa")) + 
-		geom_bar(stat="identity", show_guide=FALSE) + 
-		labs(y = "Relative Abundance", x = "") +
-		theme_classic() +
-		scale_fill_manual(values=cols2)
+		#ensure same order of samples in map and otu table
+		map <- map[colnames(positive_otu_table),]
 		
-	#assign pdf name
-	file <- c(".pdf")
-	name <- paste(trait, ".pdf", sep='')
-	name <- paste(dir, name, sep="/")
+		#melt the otu_table by sample id
+		melted_otu_table <- melt(positive_otu_table)
+		colnames(melted_otu_table) <- c("Taxa", "SampleID", "Count")
 
-	#make the pdf
-	pdf(name, height=6,width=6)
-	par(mar=c(8,4,0.5,6), oma=c(0.1,0.1,0.1,0.1), mgp=c(1.5,0.5,0))
-				
-	# Plot the taxa summary
-	print(taxa_plot)
-	dev.off()
+		#merge the otu table and mapping file
+		map$SampleID <- rownames(map)
+		melted_otu_table <- merge(melted_otu_table, map, by="SampleID")
+			
+		#collapse by groups in the map column
+		group_collapsed_otus <- ddply(melted_otu_table, 
+									.(Taxa,melted_otu_table[,map_column]), 
+									summarize, Count = mean(Count))
+		colnames(group_collapsed_otus)[2] <- map_column
+
+		##call taxa that are less than 1% of the population "Other"
+		#group_collapsed_otus[] <- lapply(group_collapsed_otus, as.character)
+		#group_collapsed_otus[which(group_collapsed_otus$Count < 0.01),
+								#"Taxa"] <- "Other"
+		#group_collapsed_otus$Count <- as.numeric(group_collapsed_otus$Count)
+		#re-collapse to group the 'Others'
+		#group_collapsed_otus <- ddply(group_collapsed_otus, 
+										#.(Taxa,group_collapsed_otus[,2]), 
+										#summarize, Count = sum(Count))
+
+		#make the plot
+		taxa_plot <- NULL
+		taxa_plot <- ggplot(group_collapsed_otus, aes_string(x = map_column, 
+													y = "Count", fill="Taxa")) + 
+			geom_bar(stat="identity", show_guide=FALSE) + 
+			labs(y = "Relative Abundance", x = "") +
+			theme_classic() +
+			scale_fill_manual(values=cols2)
+			
+		#assign pdf name
+		file <- c(".pdf")
+		name <- paste(trait, ".pdf", sep='')
+		name <- paste(dir, name, sep="/")
+
+		#make the pdf
+		pdf(name, height=6,width=6)
+		par(mar=c(8,4,0.5,6), oma=c(0.1,0.1,0.1,0.1), mgp=c(1.5,0.5,0))
+					
+		# Plot the taxa summary
+		print(taxa_plot)
+		dev.off()
 	}
 }
 	

@@ -9,8 +9,7 @@
 	#set directory
 	dir <- paste(output, "predicted_phenotypes", sep="/")
 
-	cat("\n\n RESULTS: \n\n")
-
+	#cat("\n\n RESULTS: \n\n")
 	#check dimensions of traits
 	#cat("\nDimensions of trait table:\n")
 	#cat(dim(predictions))
@@ -26,6 +25,10 @@
 	#define traits
 	traits <- colnames(predictions)
 
+	#define groups
+	groups <- sort(unique(map[,map_column]))
+	groups <- lapply(groups, as.character)
+
 	#cat("\nNumber of samples in each treatment group:\n")
 	#cat(table(map[,map_column]))
   
@@ -34,15 +37,15 @@
 
 		#show number of samples in each body site and trait
 		header <- paste("\n\n", trait, sep='')
-		cat(header)
-		cat("\nRelative Abundance with trait (mean):\n")
-		print(tapply(predictions[,trait], map[,map_column], mean))
+		# cat(header)
+		# cat("\nRelative Abundance with trait (mean):\n")
+		# print(tapply(predictions[,trait], map[,map_column], mean))
 
-		cat("\nRelative Abundance with trait (median):\n")
-		print(tapply(predictions[,trait], map[,map_column], median))
+		# cat("\nRelative Abundance with trait (median):\n")
+		# print(tapply(predictions[,trait], map[,map_column], median))
 
-		cat("\nStandard deviation:\n")
-		print(tapply(predictions[,trait], map[,map_column], sd))
+		# cat("\nStandard deviation:\n")
+		# print(tapply(predictions[,trait], map[,map_column], sd))
 
 		#non-parametric tests - either two classes or multi-class
 		#print to screen and file
@@ -50,11 +53,11 @@
 			group.pvalue <- wilcox.test(predictions[,trait] ~ 
 										map[,map_column])$p.value
 		
-			cat("\np-value is:\n")
-			cat(group.pvalue,"\n")
+			# cat("\np-value is:\n")
+			# cat(group.pvalue,"\n")
 		
-			cat("FDR-corrected p-value is:\n")
-			cat(p.adjust(group.pvalue,'fdr'), "\n")
+			# cat("FDR-corrected p-value is:\n")
+			# cat(p.adjust(group.pvalue,'fdr'), "\n")
 			
 			outfile <- paste(trait, "_stats.txt", sep="")
 
@@ -103,11 +106,11 @@
 			}
 			names(pw.pvalues) <- pw.names
 			
-			cat("\nPairwise p-values are:\n")
-			cat(pw.pvalues)
+			# cat("\nPairwise p-values are:\n")
+			# cat(pw.pvalues)
 			
-			cat("\nFDR-corrected pairwise p-values are:\n")
-			cat(p.adjust(pw.pvalues,'fdr'))
+			# cat("\nFDR-corrected pairwise p-values are:\n")
+			# cat(p.adjust(pw.pvalues,'fdr'))
 			
 			outfile <- paste(trait, "_stats.txt", sep="")
 			
@@ -141,7 +144,7 @@
 		}
 
 	#get palette 1 from R ColorBrewer
-	cols <- sprintf('%s95',brewer.pal(9,'Set1'))
+	cols <- sprintf('%s97',brewer.pal(9,'Set1'))
 
 	#assign pdf name
 	file <- c(".pdf")

@@ -173,16 +173,18 @@ if(output != "."){
 	stop("Error: Cannot create a hidden directory")
 }
 
-
+print("Loading Inputs...")
 #Load inputs
 #Required: otu table
 #Options: map, map column,groups
 loaded.inputs <- load.inputs(otu_table, map, mapcolumn, groups)
 
+print("16S copy number normalizing OTU table...")
 #16S copy normalize otu table
 #Required: copyNo_table, loaded otu
 normalized_otus <- copyNo.normalize.otu(copy_no_file, loaded.inputs$otu_table)
 
+print("Predicting phenotypes...")
 #Make predictions
 #Required:trait table,  normalized otu table
 #Options: single trait, threshold, use cov
@@ -192,6 +194,7 @@ prediction_outputs <- single.cell.predictions(trait_table,
 											threshold_set,
 											use_cov)
 
+print("Plotting thresholds...")
 #Plot thresholds
 #Two options - one with no mapping file, one with mapping file
 if(is.null(threshold_set)){
@@ -206,7 +209,7 @@ if(is.null(threshold_set)){
 	}
 }
 
-
+print("Plotting predictions...")
 #Plot predictions
 #Three options: one without a mapping file, 
 #   one with a mapping file, continous
@@ -228,6 +231,7 @@ if(isTRUE(opts$all)){
 		}
 }
 
+print("Plotting OTU contributions...")
 #Plot otu contributions (taxa summaries)
 #Two options, with a mapping file or without
 if(isTRUE(opts$all)){
@@ -245,6 +249,7 @@ if(isTRUE(opts$all)){
 					loaded.inputs$map_column,
 					taxa_level)
 }
+print("BugBase analysis complete")
 
 
 

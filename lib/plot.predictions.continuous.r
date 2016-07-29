@@ -8,8 +8,7 @@
 	#set directory
 	dir <- paste(output, "predicted_phenotypes", sep="/")
 
-	cat("\n\n RESULTS: \n\n")
-
+	#cat("\n\n RESULTS: \n\n")
 	#check dimensions of traits
 	#cat("\nDimensions of trait table:\n")
 	#cat(dim(predictions),"\n")
@@ -37,20 +36,20 @@
 		p <- pf(fstats[1],fstats[2],fstats[3],lower.tail=F)
 	
 		header <- paste("\n\n", trait, sep='')
-		cat(header)
-		cat("\n\nLiner Model Statistics for: ")
-		cat(trait)
-		cat("\n\nCoefficients\n")
-		cat("Estimate    Std. Error    t value    Pr(>|t|)\n")
-		cat(coeff)
-		cat("\np-value\n")
-		cat(p)
-		cat("\n\nPearson's Correlation\n\n")
-		cat("Correlation Estimate:\n")
-		cat(cor.tests$estimate)
-		cat("\np-value\n")
-		cat(cor.tests$p.value)
-		cat("\n\n")
+		# cat(header)
+		# cat("\n\nLiner Model Statistics for: ")
+		# cat(trait)
+		# cat("\n\nCoefficients\n")
+		# cat("Estimate    Std. Error    t value    Pr(>|t|)\n")
+		# cat(coeff)
+		# cat("\np-value\n")
+		# cat(p)
+		# cat("\n\nPearson's Correlation\n\n")
+		# cat("Correlation Estimate:\n")
+		# cat(cor.tests$estimate)
+		# cat("\np-value\n")
+		# cat(cor.tests$p.value)
+		# cat("\n\n")
 	
 		outfile <- paste(trait, "_stats.txt", sep="")
 	
@@ -71,7 +70,7 @@
 		sink()
 	
 		#set color color palette from RColorBrewer, 95% transparency
-		cols <- sprintf('%s95',brewer.pal(9,'Set1'))
+		cols <- sprintf('%s97',brewer.pal(9,'Set1'))
 	
 		#to use gradient colors
 		#Pal <- colorRampPalette(c(cols[1],cols[2]))

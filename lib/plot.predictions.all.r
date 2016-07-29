@@ -14,15 +14,15 @@
 	for(x in 1:length(traits)){
 		trait <- traits[x]
 
-		#Print to screen
-		header <- paste("\n\n", trait, sep='')
-		cat(header)
-		cat("\nRelative Abundance with trait (mean):\n")
-		cat(mean(predictions[,trait]))
-		cat("\nRelative Abundance with trait (median):\n")
-		cat(median(predictions[,trait]))
-		cat("\nStandard deviation:\n")
-		cat(sd(predictions[,trait]),"\n")
+		# #Print to screen
+		# header <- paste("\n\n", trait, sep='')
+		# cat(header)
+		# cat("\nRelative Abundance with trait (mean):\n")
+		# cat(mean(predictions[,trait]))
+		# cat("\nRelative Abundance with trait (median):\n")
+		# cat(median(predictions[,trait]))
+		# cat("\nStandard deviation:\n")
+		# cat(sd(predictions[,trait]),"\n")
 
 		#write summary stats to output file
 		outfile <- paste(trait, "_stats.txt", sep="")   

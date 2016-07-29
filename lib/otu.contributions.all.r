@@ -19,12 +19,14 @@
 	if(is.null(taxa_level)){
 		taxa_level <- 2
 	}
+	taxa_level <- as.numeric(taxa_level)
 	
 	#read in gg_taxonomy table
 	gg_taxonomy <- read.table(taxonomy, sep="\t", row.names=1, check=F)
 	
 	#keep only otus in the gg taxonomy table that are in the otu table
 	#these tables will be in the same otu order
+	#OTUs are now rows
 	otu_table <- t(otu_table)
 	otus_keep <- intersect(rownames(otu_table),rownames(gg_taxonomy))
 	gg_taxonomy <- gg_taxonomy[otus_keep,, drop=F]
@@ -49,11 +51,15 @@
 			}
 		}
 	}
-	
+
+	#store the full otu_table
+	otu_table1 <- otu_table
+
 	#add taxonomy as the rownames in the otu table
 	rownames(otu_table) <- names_split[,taxa_level]
 	
 	#aggregate to the same taxa
+	#you must t() again, to have samples as columns
 	otu_table <- t(sapply(by(otu_table,rownames(otu_table),colSums),identity))
 	
 	#set colors for plotting and legend creation
@@ -78,6 +84,8 @@
 	legend_info$X <- as.numeric(legend_info$X)
 	legend_info$Y <- as.numeric(legend_info$Y)
 	legend_info$Color <- as.character(legend_info$Color)
+	#Add a space before name so plot legend looks nice
+	legend_info$Taxa <- sub("^", " ", legend_info$Taxa )
 	
 	#name pdf
 	taxa_legend <- c("taxa_legend.pdf")
@@ -105,7 +113,19 @@
 		
 		#multiple the otu_table by the boolean table for otus contributing to 
 		# the trait
-		positive_otu_table <- sweep(otu_table, 2, otus_contributing[,x],"*")
+		positive_otu_table <- t(sweep(t(otu_table1), 2, 
+									otus_contributing[,x],"*"))
+		
+		#add taxonomy as the rownames in the otu table
+		rownames(positive_otu_table) <- names_split[,taxa_level]
+  
+		#aggregate to the same taxa
+		#you must t() again, to have samples as columns
+		positive_otu_table <- t(sapply(by(positive_otu_table,
+							rownames(positive_otu_table),colSums),identity))
+	
+		#ensure same order of samples in map and otu table
+		map <- map[colnames(positive_otu_table),]
 		
 		#melt the otu_table and collapse by Taxa
 		melted_otu_table <- melt(positive_otu_table)
