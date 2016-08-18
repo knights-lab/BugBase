@@ -23,6 +23,7 @@
 # -z 	Data is of type continuous 
 # -C 	Use covariance instead of variance to determine thresholds
 # -a 	Plot all samples (no stats will be run)
+options(warn = -1)
 
 library(optparse)
 library(reshape2) 
@@ -87,7 +88,10 @@ db_fp <- paste(my_env, "/usr", sep='/')
 copy_no_file <- paste(db_fp, "16S_13_5_precalculated.txt.gz", sep='/')
 taxonomy <- paste(db_fp, "97_otu_taxonomy.txt.gz", sep='/')
 if(isTRUE(opts$kegg)){
-  trait_table <- paste(db_fp, "kegg_modules_precalculated.txt.gz", sep='/')
+  trait_table <- paste(db_fp, "L3_Kegg_Modules_Precalculated.txt.gz", sep='/')
+  if(is.null(opts$phenotype)){
+  	stop("A list of pathways must be specified when using kegg modules")
+  }
 } else {
   if(is.null(opts$usertable)){
     trait_table <- paste(db_fp, "default_traits_precalculated.txt.gz", sep='/')
@@ -101,13 +105,13 @@ if(isTRUE(opts$kegg)){
 #If not 'plot all', check map and column exist
 if(!isTRUE(opts$all)){
 	if(is.null(opts$mappingfile)){
-		stop("Error: Mapping file not specified. 
+		stop("Mapping file not specified. 
 			To run BugBase without a mapping file use '-a'")
 	} else {
 		map <- opts$mappingfile
 	}
 	if(is.null(opts$mapcolumn)){
-		stop("Error: column header must be specified")
+		stop("Column header must be specified")
 	} else {
 		mapcolumn <- opts$mapcolumn
 	}
@@ -124,7 +128,7 @@ if(isTRUE(opts$continuous)){
 
 #Define OTU table
 if(is.null(opts$otutable)){
-	stop("Error: No otu table specified")
+	stop("No otu table specified")
 } else {
 	otu_table <- opts$otutable
 }
@@ -133,10 +137,10 @@ if(is.null(opts$otutable)){
 threshold_set <- opts$threshold
 if(! is.null(threshold_set)){
 	if(! 1 >= threshold_set) {
-		stop("Error: Threshold must be between 0 and 1")
+		stop("Threshold must be between 0 and 1")
 	}
 	if(! threshold_set > 0){
-		stop("Error: Threshold must be between 0 and 1")
+		stop("Threshold must be between 0 and 1")
 	}
 }
 
@@ -144,12 +148,15 @@ if(! is.null(threshold_set)){
 taxa_level <- opts$taxalevel
 if(! is.null(taxa_level)){
 	if(! taxa_level %in% c(1,2,3,4,5,6,7)){
-		stop("Error: Taxa level must be 1,2,3,4,5,6 or 7")
+		stop("Taxa level must be 1,2,3,4,5,6 or 7")
 	}
 }
 
 #Define trait (phenotype) to predict, default is all
 test_trait <- opts$phenotype
+if(test_trait == "all"){
+	test_trait <- NULL
+}
 
 #Define metric for threshold calculations (variance is default)
 use_cov <- opts$cov
@@ -167,10 +174,10 @@ if(output != "."){
 		dir.create(file.path(output, "thresholds"))
 		dir.create(file.path(output, "otu_contributions"))
 	} else {
-		stop("Error: Output directory already exists")
+		stop("Output directory already exists")
 	}
 } else {
-	stop("Error: Cannot create a hidden directory")
+	stop("Cannot create a hidden directory")
 }
 
 print("Loading Inputs...")

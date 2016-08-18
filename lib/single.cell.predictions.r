@@ -34,11 +34,14 @@
 	if(is.null(test_trait)){
 		traits <- colnames(trait_table)
 	} else {
-		if(! test_trait %in% colnames(trait_table)){
-			cat("\nError: Trait specified is not available")
-			cat("\nThese are the available traits:")
-			cat("\n",colnames(trait_table),"\n\n\n")
-			stop("\nError Specified above")
+		test_trait <- strsplit(test_trait, ",")[[1]]
+		trait_missing <- which(! test_trait %in% colnames(trait_table))
+		if(length(trait_missing) > 0){
+			print("Error: The following specified traits do not exist:")
+			print(test_trait[trait_missing])
+			print("These are the available traits:")
+			print(colnames(trait_table))
+			stop("Error is specified above")
 		} else {
 			traits <- test_trait
 		}
