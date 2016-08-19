@@ -15,7 +15,7 @@
 
 # Options
 # -t 	Specify which taxa level to plot otu contributions by (number 1-7) 
-# -p 	Specify just one phenotype to predict (text, exact name match)
+# -p 	Specify list of traits (phenotypes) to test (list, comma separated)
 # -T 	Specify a threshold to use for all traits (number 0-1)
 # -g 	Specify subset of groups in map column to plot (list, comma separated)
 # -u  Use a user-define trait table. Absolute file path must be specified
@@ -29,7 +29,6 @@ library(optparse)
 library(reshape2) 
 library(plyr)
 library(RColorBrewer)
-library(grid)
 library(gridExtra)
 library(ggplot2)
 library(beeswarm)
@@ -63,11 +62,13 @@ option_list <- list(
 		help="taxa level to plot otu contributions by, default is 2 (phylum) 
 		[default %default]"),
 	make_option(c("-p", "--phenotype"), type="character", default=NULL,
-		help="specific trait (phenotype) to predict [default %default]"),
+		help="specific traits (phenotypes) to predict, separated by commas, 
+		no spaces [default %default]"),
 	make_option(c("-T", "--threshold"), type="character", default=NULL,
 		help="threshold to use, must be between 0 and 1 [default %default]"),
 	make_option(c("-g", "--groups"), type="character", default=NULL,
-		help="treatment groups of samples, separated by commas, no spaces [default %default]"),
+		help="treatment groups of samples, separated by commas, no spaces 
+		[default %default]"),
 	make_option(c("-u", "--usertable"), type="character", default=NULL,
 	 help="user define trait table, absolute file path required [
 	 default %default]"),
@@ -154,8 +155,12 @@ if(! is.null(taxa_level)){
 
 #Define trait (phenotype) to predict, default is all
 test_trait <- opts$phenotype
-if(test_trait == "all"){
-	test_trait <- NULL
+if(! is.null(test_trait)){
+	if(test_trait == "all"){
+		test_trait <- NULL
+	}
+} else {
+	test_trait <- test_trait
 }
 
 #Define metric for threshold calculations (variance is default)
