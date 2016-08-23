@@ -141,7 +141,10 @@
 			geom_bar(stat="identity", show_guide=FALSE) + 
 			labs(y = "Relative Abundance", x = "") +
 			theme_classic() +
-			theme(axis.text.x=element_blank())+
+			theme(axis.text.x=element_blank(), axis.line.x = 
+				element_line(colour = 'black', size=0.5, linetype='solid'), 
+				axis.line.y = element_line(colour = 'black', size=0.5, 
+				linetype='solid')) +
 			scale_fill_manual(values=cols2)
 		
 		#assign pdf name
