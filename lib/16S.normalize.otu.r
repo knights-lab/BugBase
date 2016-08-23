@@ -5,7 +5,7 @@
 # Required: 16S table (copyNo_table_fp), otu table (otu_table_fp)
 # Returns: normalized_otus
 
-"copyNo.normalize.otu" <- function(copyNo_table, otu_table_loaded){
+"copyNo.normalize.otu" <- function(copyNo_table, otu_table_loaded, output){
 	
 	#Load the 16S table and the otu table
 	#16S_table is otu x copy number

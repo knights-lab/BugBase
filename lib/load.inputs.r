@@ -7,7 +7,7 @@
 
 	#check for an otu table
 	if(is.null(otu_table)){
-		stop("Error: No otu table specified.")
+		stop("\nError: No otu table specified.\n")
 	}
 
 	#determine file type of otu table (json .biom or .txt)
@@ -21,18 +21,18 @@
 		if(otu_ext == "biom"){
 			otu_table <- as.matrix(biom_data(read_biom(otu_table)))
 			} else {
-				stop("Error: otu table must be either .txt or .biom (json)")
+				stop("\nError: otu table must be either .txt or .biom (json)\n")
 			}
 	}
 	
 	if(is.null(map)){
-		cat("\nNo mapping file was specified. All samples will be predicted.")
+		cat("\nNo mapping file was specified. All samples will be predicted.\n")
 	} else {
 		#map is samples x metadata
 		map <- read.table(map,sep='\t',head=T,row=1,check=F,comment='')
 		
 		if(is.null(map_column)){
-			stop("Error: No map column specified. To run BugBase without a mapping file use '-a'")
+			stop("\nError: No map column specified. To run BugBase without a mapping file use '-a'\n")
 		}
 		
 		if(! map_column %in% colnames(map)){
@@ -51,7 +51,7 @@
 			groups <- unique(map[,map_column])
 			groups <- lapply(groups, as.character)
 			if(length(groups) <= 1){
-				stop("Error: a minimum of two groups must be tested")
+				stop("\nError: a minimum of two groups must be tested\n")
 			}
 		} else {
 			#use user-defined groups
@@ -59,7 +59,7 @@
 			#remove any duplicates
 			groups <- unique(groups)
 			if(length(groups) <= 1){
-				stop("Error: a minimum of two groups must be tested")
+				stop("\nError: a minimum of two groups must be tested\n")
 			}
 			#define the groups that exist in that mapping column
 			groups_avail <- unique(map[,map_column])
