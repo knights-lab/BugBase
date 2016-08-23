@@ -69,14 +69,89 @@
 	#create as many colors as there are taxa, and name them with the taxa names
 	cols2 <- cols(length(rownames(otu_table)))
 	names(cols2) <- unique(rownames(otu_table))
+	cols2 <- c(cols2,"#C0C0C0")
+	names(cols2)[length(cols2)] <- "Other"
+
+	taxa_list <- c()
 	
+	#create taxa summaries
+	for(x in 1:length(traits)){
+		trait <- traits[x]
+		
+		#multiple the otu_table by the boolean table for otus contributing to 
+		# the trait
+		positive_otu_table <- t(sweep(t(otu_table1), 2, 
+									otus_contributing[,x],"*"))
+		
+		#add taxonomy as the rownames in the otu table
+		rownames(positive_otu_table) <- names_split[,taxa_level]
+  
+		#aggregate to the same taxa
+		#you must t() again, to have samples as columns
+		positive_otu_table <- t(sapply(by(positive_otu_table,
+							rownames(positive_otu_table),colSums),identity))
+	
+		#melt the otu_table and collapse by Taxa
+		melted_otu_table <- melt(positive_otu_table)
+		colnames(melted_otu_table) <- c("Taxa", "SampleID", "Count")
+		melted_otu_table$SampleID <- as.factor(1)
+		taxa_collapsed <- ddply(melted_otu_table, .(Taxa, SampleID),summarize, 
+								Count = mean(Count))
+
+		#set value for cutoff (1/10 of the highest proportion)
+		max_abund <- max(taxa_collapsed$Count)
+		cutoff_val <- max_abund / 10
+
+		#call taxa that are less than cutoff of the population "Other"
+		taxa_collapsed$Taxa <- as.character(taxa_collapsed$Taxa)
+		taxa_collapsed$Count <- as.numeric(taxa_collapsed$Count)
+
+		taxa_collapsed[which(taxa_collapsed$Count < cutoff_val),
+								"Taxa"] <- "Other"
+		#re-collapse to group the 'Others'
+		taxa_collapsed <- ddply(taxa_collapsed, .(Taxa, SampleID), 
+								Count = sum(Count))
+
+		taxa_list <- unique(taxa_collapsed$Taxa)
+		
+		#make the plot
+		taxa_plot <- NULL
+		taxa_plot <- ggplot(taxa_collapsed, aes_string(x="SampleID",
+			y="Count", fill="Taxa")) + 
+			geom_bar(stat="identity", show_guide=FALSE) + 
+			labs(y = "Relative Abundance", x = "") +
+			theme_classic() +
+			theme(axis.text.x=element_blank(), axis.line.x = 
+				element_line(colour = 'black', size=0.5, linetype='solid'), 
+				axis.line.y = element_line(colour = 'black', size=0.5, 
+				linetype='solid')) +
+			scale_fill_manual(values=cols2)
+		
+		#assign pdf name
+		file <- c(".pdf")
+		name <- paste(trait, ".pdf", sep='')
+		name <- paste(dir, name, sep="/")
+		
+		#make the pdf
+		pdf(name, height=6,width=6)
+		par(mar=c(8,4,0.5,6), oma=c(0.1,0.1,0.1,0.1), mgp=c(1.5,0.5,0))
+		
+		# Plot the taxa summary
+		print(taxa_plot)
+		dev.off()
+	}
+
+	#subset to the taxa that met the cutoff
+	taxa_list <- unique(taxa_list)
+	cols_keep <- cols2[which(names(cols2) %in% taxa_list)]
+
 	#create a legend table with names, colors and coordinates
-	legend_info <- matrix(0, length(cols2), 4)
-	legend_info[,1] <- names(cols2)
+	legend_info <- matrix(0, length(cols_keep), 4)
+	legend_info[,1] <- names(cols_keep)
 	legend_info[,4] <- 1
-	counter <- c(1:length(cols2)+1)
-	for(i in 1:length(cols2)){
-		legend_info[i,2] <- cols2[[i]]
+	counter <- c(1:length(cols_keep)+1)
+	for(i in 1:length(cols_keep)){
+		legend_info[i,2] <- cols_keep[[i]]
 		legend_info[i,3] <- counter[i]
 	}
 	colnames(legend_info) <- c("Taxa", "Color", "Y", "X")
@@ -105,59 +180,5 @@
 			 ylab='')
 	#add names
 	text(legend_info$X, legend_info$Y, legend_info$Taxa, pos=4)
-	dev.off()
-	
-	#create taxa summaries
-	for(x in 1:length(traits)){
-		trait <- traits[x]
-		
-		#multiple the otu_table by the boolean table for otus contributing to 
-		# the trait
-		positive_otu_table <- t(sweep(t(otu_table1), 2, 
-									otus_contributing[,x],"*"))
-		
-		#add taxonomy as the rownames in the otu table
-		rownames(positive_otu_table) <- names_split[,taxa_level]
-  
-		#aggregate to the same taxa
-		#you must t() again, to have samples as columns
-		positive_otu_table <- t(sapply(by(positive_otu_table,
-							rownames(positive_otu_table),colSums),identity))
-	
-		#ensure same order of samples in map and otu table
-		map <- map[colnames(positive_otu_table),]
-		
-		#melt the otu_table and collapse by Taxa
-		melted_otu_table <- melt(positive_otu_table)
-		colnames(melted_otu_table) <- c("Taxa", "SampleID", "Count")
-		melted_otu_table$SampleID <- as.factor(1)
-		taxa_collapsed <- ddply(melted_otu_table, .(Taxa, SampleID),summarize, 
-								Count = mean(Count))
-		
-		#make the plot
-		taxa_plot <- NULL
-		taxa_plot <- ggplot(taxa_collapsed, aes_string(x="SampleID",
-			y="Count", fill="Taxa")) + 
-			geom_bar(stat="identity", show_guide=FALSE) + 
-			labs(y = "Relative Abundance", x = "") +
-			theme_classic() +
-			theme(axis.text.x=element_blank(), axis.line.x = 
-				element_line(colour = 'black', size=0.5, linetype='solid'), 
-				axis.line.y = element_line(colour = 'black', size=0.5, 
-				linetype='solid')) +
-			scale_fill_manual(values=cols2)
-		
-		#assign pdf name
-		file <- c(".pdf")
-		name <- paste(trait, ".pdf", sep='')
-		name <- paste(dir, name, sep="/")
-		
-		#make the pdf
-		pdf(name, height=6,width=6)
-		par(mar=c(8,4,0.5,6), oma=c(0.1,0.1,0.1,0.1), mgp=c(1.5,0.5,0))
-		
-		# Plot the taxa summary
-		print(taxa_plot)
-		dev.off()
-	}
+	graphics.off()
 }

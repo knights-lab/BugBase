@@ -26,7 +26,7 @@
 	}
 	
 	if(is.null(map)){
-		cat("\nNo mapping file was specified. All samples will be predicted.")
+		cat("\nNo mapping file was specified. All samples will be predicted.\n")
 	} else {
 		#map is samples x metadata
 		map <- read.table(map,sep='\t',head=T,row=1,check=F,comment='')

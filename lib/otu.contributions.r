@@ -73,43 +73,10 @@
 	#create as many colors as there are taxa, and name them with the taxa names
 	cols2 <- cols(length(rownames(otu_table)))
 	names(cols2) <- unique(rownames(otu_table))
-	
-	#create a legend table with names, colors and coordinates
-	legend_info <- matrix(0, length(cols2), 4)
-	legend_info[,1] <- names(cols2)
-	legend_info[,4] <- 1
-	counter <- c(1:length(cols2)+1)
-	for(i in 1:length(cols2)){
-	  legend_info[i,2] <- cols2[[i]]
-	  legend_info[i,3] <- counter[i]
-	}
-	colnames(legend_info) <- c("Taxa", "Color", "Y", "X")
-	legend_info <- as.data.frame(legend_info)
-	legend_info$X <- as.numeric(legend_info$X)
-	legend_info$Y <- as.numeric(legend_info$Y)
-	legend_info$Color <- as.character(legend_info$Color)
-	#Add a space before name so plot legend looks nice
-	legend_info$Taxa <- sub("^", " ", legend_info$Taxa ) 
+	cols2 <- c(cols2,"#C0C0C0")
+	names(cols2)[length(cols2)] <- "Other"
 
-	#name pdf
-	taxa_legend <- c("taxa_legend.pdf")
-	legend_name <- paste(dir, taxa_legend, sep="/")
-	
-	#make the pdf
-	pdf(legend_name, height=6,width=6)
-	par(mar=c(0.5,0.5,0.5,0.5), oma=c(0.1,0.1,0.1,0.1), mgp=c(1.5,0.5,0))
-	
-	#plot the points
-	plot(legend_info$X, legend_info$Y, 
-		 pch=15, 
-		 cex=3, 
-		 col= legend_info$Color, 
-		 axes=FALSE, 
-		 xlab='', 
-		 ylab='')
-	#add names
-	text(legend_info$X, legend_info$Y, legend_info$Taxa, pos=4)
-	dev.off()
+	taxa_list <- c()
 	  
 	#create taxa summaries
 	for(x in 1:length(traits)){
@@ -145,15 +112,23 @@
 									summarize, Count = mean(Count))
 		colnames(group_collapsed_otus)[2] <- map_column
 
-		##call taxa that are less than 1% of the population "Other"
-		#group_collapsed_otus[] <- lapply(group_collapsed_otus, as.character)
-		#group_collapsed_otus[which(group_collapsed_otus$Count < 0.01),
-								#"Taxa"] <- "Other"
-		#group_collapsed_otus$Count <- as.numeric(group_collapsed_otus$Count)
+		#set value for cutoff (1/10 of the highest proportion)
+		max_abund <- max(group_collapsed_otus$Count)
+		cutoff_val <- max_abund / 10
+
+		#call taxa that are less than cutoff of the population "Other"
+		group_collapsed_otus$Taxa <- as.character(group_collapsed_otus$Taxa)
+		group_collapsed_otus$Count <- as.numeric(group_collapsed_otus$Count)
+
+		group_collapsed_otus[which(group_collapsed_otus$Count < cutoff_val),
+								"Taxa"] <- "Other"
 		#re-collapse to group the 'Others'
-		#group_collapsed_otus <- ddply(group_collapsed_otus, 
-										#.(Taxa,group_collapsed_otus[,2]), 
-										#summarize, Count = sum(Count))
+		group_collapsed_otus <- ddply(group_collapsed_otus, 
+										.(Taxa,group_collapsed_otus[,2]), 
+										summarize, Count = sum(Count))
+		colnames(group_collapsed_otus)[2] <- map_column
+
+		taxa_list <- c(taxa_list, unique(group_collapsed_otus$Taxa))
 
 		#make the plot
 		taxa_plot <- NULL
@@ -180,5 +155,47 @@
 		print(taxa_plot)
 		dev.off()
 	}
+
+	#subset to the taxa that met the cutoff
+	taxa_list <- unique(taxa_list)
+	cols_keep <- cols2[which(names(cols2) %in% taxa_list)]
+
+	#create a legend table with names, colors and coordinates
+	legend_info <- matrix(0, length(cols_keep), 4)
+	legend_info[,1] <- names(cols_keep)
+	legend_info[,4] <- 1
+	counter <- c(1:length(cols_keep)+1)
+	for(i in 1:length(cols_keep)){
+	  legend_info[i,2] <- cols_keep[[i]]
+	  legend_info[i,3] <- counter[i]
+	}
+	colnames(legend_info) <- c("Taxa", "Color", "Y", "X")
+	legend_info <- as.data.frame(legend_info)
+	legend_info$X <- as.numeric(legend_info$X)
+	legend_info$Y <- as.numeric(legend_info$Y)
+	legend_info$Color <- as.character(legend_info$Color)
+	#Add a space before name so plot legend looks nice
+	legend_info$Taxa <- sub("^", " ", legend_info$Taxa ) 
+
+	#name pdf
+	taxa_legend <- c("taxa_legend.pdf")
+	legend_name <- paste(dir, taxa_legend, sep="/")
+	
+	#make the pdf
+	pdf(legend_name, height=6,width=6)
+	par(mar=c(0.5,0.5,0.5,0.5), oma=c(0.1,0.1,0.1,0.1), mgp=c(1.5,0.5,0))
+	
+	#plot the points
+	plot(legend_info$X, legend_info$Y, 
+		 pch=15, 
+		 cex=3, 
+		 col= legend_info$Color, 
+		 axes=FALSE, 
+		 xlab='', 
+		 ylab='')
+	#add names
+	text(legend_info$X, legend_info$Y, legend_info$Taxa, pos=4)
+	graphics.off()
+
 }
 	
