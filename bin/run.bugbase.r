@@ -194,7 +194,7 @@ loaded.inputs <- load.inputs(otu_table, map, mapcolumn, groups)
 print("16S copy number normalizing OTU table...")
 #16S copy normalize otu table
 #Required: copyNo_table, loaded otu
-normalized_otus <- copyNo.normalize.otu(copy_no_file, loaded.inputs$otu_table)
+normalized_otus <- copyNo.normalize.otu(copy_no_file, loaded.inputs$otu_table, output)
 
 print("Predicting phenotypes...")
 #Make predictions
