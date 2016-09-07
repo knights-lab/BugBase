@@ -209,58 +209,58 @@ prediction_outputs <- single.cell.predictions(trait_table,
 print("Plotting thresholds...")
 #Plot thresholds
 #Two options - one with no mapping file, one with mapping file
-# if(is.null(threshold_set)){
-# 	if(isTRUE(opts$all)){
-# 		#Required: predictions
-# 		plot.thresholds.all(prediction_outputs$predictions)
-# 	} else {
-# 		#Required: predictions, map and map column
-# 		plot.thresholds(prediction_outputs$predictions, 
-# 				loaded.inputs$map, 
-# 				loaded.inputs$map_column)
-# 	}
-# }
+if(is.null(threshold_set)){
+	if(isTRUE(opts$all)){
+		#Required: predictions
+		plot.thresholds.all(prediction_outputs$predictions)
+	} else {
+		#Required: predictions, map and map column
+		plot.thresholds(prediction_outputs$predictions, 
+				loaded.inputs$map, 
+				loaded.inputs$map_column)
+	}
+}
 
 print("Plotting predictions...")
 #Plot predictions
 #Three options: one without a mapping file, 
 #   one with a mapping file, continous
 #   one with a mapping file, discrete
-# if(isTRUE(opts$all)){
-# 	#Required: predictions
-# 	plot.predictions.all(prediction_outputs$final_predictions)
-# } else {
-# 	if(isTRUE(opts$continuous)){
-# 		#Required: predictions, map, map column
-# 		plot.predictions.continuous(prediction_outputs$final_predictions, 
-# 							loaded.inputs$map, 
-# 							loaded.inputs$map_column)
-# 	} else {
-# 		#Required: predictions, map, map column
-# 		plot.predictions.discrete(prediction_outputs$final_predictions, 
-# 							loaded.inputs$map, 
-# 							loaded.inputs$map_column)
-# 		}
-# }
+if(isTRUE(opts$all)){
+	#Required: predictions
+	plot.predictions.all(prediction_outputs$final_predictions)
+} else {
+	if(isTRUE(opts$continuous)){
+		#Required: predictions, map, map column
+		plot.predictions.continuous(prediction_outputs$final_predictions, 
+							loaded.inputs$map, 
+							loaded.inputs$map_column)
+	} else {
+		#Required: predictions, map, map column
+		plot.predictions.discrete(prediction_outputs$final_predictions, 
+							loaded.inputs$map, 
+							loaded.inputs$map_column)
+		}
+}
 
 print("Plotting OTU contributions...")
 #Plot otu contributions (taxa summaries)
 #Two options, with a mapping file or without
-# if(isTRUE(opts$all)){
-# 	#Required: otu contributions, normalized otu table, taxonomy
-# 	otu.contributions.all.r(prediction_outputs$otus_contributing,
-# 		prediction_outputs$otu_table_subset,
-# 		taxonomy, taxa_level)
-# } else {
-# 	#Required: otu contributions, normalized otu table, taxonomy
-# 	#   map, map column, taxa_level
-# 	otu.contributions(prediction_outputs$otus_contributing, 
-# 					prediction_outputs$otu_table_subset, 
-# 					taxonomy, 
-# 					loaded.inputs$map, 
-# 					loaded.inputs$map_column,
-# 					taxa_level)
-# }
+if(isTRUE(opts$all)){
+	#Required: otu contributions, normalized otu table, taxonomy
+	otu.contributions.all.r(prediction_outputs$otus_contributing,
+		prediction_outputs$otu_table_subset,
+		taxonomy, taxa_level)
+} else {
+	#Required: otu contributions, normalized otu table, taxonomy
+	#   map, map column, taxa_level
+	otu.contributions(prediction_outputs$otus_contributing, 
+					prediction_outputs$otu_table_subset, 
+					taxonomy, 
+					loaded.inputs$map, 
+					loaded.inputs$map_column,
+					taxa_level)
+}
 print("BugBase analysis complete")
 
 
