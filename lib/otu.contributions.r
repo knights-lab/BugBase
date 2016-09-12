@@ -129,6 +129,10 @@
 		colnames(group_collapsed_otus)[2] <- map_column
 
 		taxa_list <- c(taxa_list, unique(group_collapsed_otus$Taxa))
+ 		
+ 		group_collapsed_otus[,map_column] <- as.numeric(as.character(group_collapsed_otus[,map_column]))
+ 		group_collapsed_otus <- group_collapsed_otus[order(group_collapsed_otus[,map_column]),]
+		group_collapsed_otus[,map_column] <- as.character(group_collapsed_otus[,map_column])
 
 		#make the plot
 		taxa_plot <- NULL

@@ -16,7 +16,7 @@
 	#cat(dim(map),"\n")
 
 	#make sure map column is numeric
-	map[,map_column] <- as.numeric(map[,map_column])
+	map[,map_column] <- as.numeric(as.character(map[,map_column]))
 	
 	#ensure same order of samples in map and traits
 	map <- map[rownames(predictions),]
@@ -28,7 +28,7 @@
 		trait <- traits[x]
 
 		#correlation test and linear model
-		cor.tests <- cor.test(predictions[,trait], map[,map_column])
+		cor.tests <- cor.test(predictions[,trait], map[,map_column], method="spearman")
 		lm.out <- lm(predictions[,trait] ~ map[,map_column])
 	
 		coeff <- summary(lm.out)$coefficients[2,]
@@ -61,7 +61,7 @@
 		cat(coeff)
 		cat("\np-value\n")
 		cat(p)
-		cat("\n\nPearson's Correlation\n\n")
+		cat("\n\nSpearman's Correlation\n\n")
 		cat("Correlation Estimate:\n")
 		cat(cor.tests$estimate)
 		cat("\np-value\n")

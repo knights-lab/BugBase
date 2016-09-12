@@ -131,10 +131,10 @@
 			
 			cat("\nPairwise Mann-Whitney-Wilcoxon Tests were performed.\n")
 			cat("Pairwise p-values are:\n")
-			cat(pw.pvalues,"\n")
+			print(pw.pvalues,"\n", digits=5, quote=FALSE)
 			
 			cat("\nFDR-corrected pairwise p-values are:\n")
-			cat(p.adjust(pw.pvalues,'fdr'))
+			print(p.adjust(pw.pvalues,'fdr'))
 
 			cat("\nKruskal-Wallis Test was performed.\n")
 			cat("\nGroup p-value is:\n")
