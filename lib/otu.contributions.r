@@ -77,7 +77,6 @@
 	names(cols2)[length(cols2)] <- "Other"
 
 	taxa_list <- c()
-	  
 	#create taxa summaries
 	for(x in 1:length(traits)){
 		trait <- traits[x]
@@ -105,13 +104,13 @@
 		#merge the otu table and mapping file
 		map$SampleID <- rownames(map)
 		melted_otu_table <- merge(melted_otu_table, map, by="SampleID")
-			
+		
 		#collapse by groups in the map column
 		group_collapsed_otus <- ddply(melted_otu_table, 
 									.(Taxa,melted_otu_table[,map_column]), 
 									summarize, Count = mean(Count))
 		colnames(group_collapsed_otus)[2] <- map_column
-
+		
 		#set value for cutoff (1/10 of the highest proportion)
 		max_abund <- max(group_collapsed_otus$Count)
 		cutoff_val <- max_abund / 10
@@ -130,10 +129,9 @@
 
 		taxa_list <- c(taxa_list, unique(group_collapsed_otus$Taxa))
  		
- 		group_collapsed_otus[,map_column] <- as.numeric(as.character(group_collapsed_otus[,map_column]))
+ 		group_collapsed_otus[,map_column] <- as.character(group_collapsed_otus[,map_column])
  		group_collapsed_otus <- group_collapsed_otus[order(group_collapsed_otus[,map_column]),]
-		group_collapsed_otus[,map_column] <- as.character(group_collapsed_otus[,map_column])
-
+    
 		#make the plot
 		taxa_plot <- NULL
 		taxa_plot <- ggplot(group_collapsed_otus, aes_string(x = map_column, 
