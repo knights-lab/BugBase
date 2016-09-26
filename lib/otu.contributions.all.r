@@ -22,7 +22,7 @@
 	taxa_level <- as.numeric(taxa_level)
 	
 	#read in gg_taxonomy table
-	gg_taxonomy <- read.table(taxonomy, sep="\t", row.names=1, check=F)
+	gg_taxonomy <- read.table(taxonomy, sep="\t", row.names=1, check=F, quote='')
 	
 	#keep only otus in the gg taxonomy table that are in the otu table
 	#these tables will be in the same otu order
