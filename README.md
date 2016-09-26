@@ -21,6 +21,7 @@ These R packages can be installed with this command in R: `install.packages(‘p
 * biom
 
 ### Installation
+#### Mac OS
 You can download BugBase here, and then add these paths to your `~/.bash_profile` file. This is what is in an example `~/.bash_profile` modification looks like:
 
 ```
@@ -48,29 +49,30 @@ You can view other options with `run.bugbase.r -h`.
 ### Using BugBase 
 
 BugBase has one main command, `run.bugbase.r`, that will:
--	Normalize your OTU table according to 16S copy number
+-	Normalize your OTU table according to 16S copy number (WGS data will not be normalized)
 -	Plot the variance in phenotype possession for thresholds 0-1
 -	Determine which threshold to set for each microbiome phenotype
 -	Deterimine the proportion of each microbiome with a given phenotype
 -	Plot the proportions of the microbiome with a given phenotype
--	Statistically analyze the microbiome phenotype proportions according the treatment groups specified, or using a using regression for continuous data
+-	Statistically analyze the microbiome phenotype proportions according the treatment groups specified, or by using regression for continuous data
 -	Plot otu contributions for each phenotype
 
 
 <dl>
 	<dt>Required</dt>
-	<dd> -i     input OTU table, picked against the GreenGenes database (.txt or .biom (json))
+	<dd> -i     input OTU table, picked against the GreenGenes database (16S) or IMG (WGS) (.txt or .biom (json))
 	<dd> -m     mapping file (tab-delimitted text file)
 	<dd> -c     map column header to plot by (which column denotes treatment groups)
 	<dd> -o     output directory name
 	
 	<dt>Optional</dt>
+	<dd> -w	 	Data is whole genome shotgun data (picked against IMG database)
 	<dd> -t	 	Taxa level to plot otu contributions by (number 1-7)
 	<dd> -p 	List only one phenotype to predict (text, exact name match)
 	<dd> -T 	Specify a threshold to use for all traits (number 0-1)
 	<dd> -g 	Specify subset of groups in map column to plot (list, comma separated)
 	<dd> -u	 	Use a user-define trait table. Absolute file path must be specified
-	<dd> -k 	Use the kegg pathways instead of default traits (Note: this will plot all Kegg pathways!)
+	<dd> -k 	Use the kegg pathways instead of default traits (Note: you must specify which pathways!)
 	<dd> -z 	Data is of type continuous 
 	<dd> -C 	Use covariance instead of variance to determine thresholds
 	<dd> -a 	Plot all samples (no stats will be run)
