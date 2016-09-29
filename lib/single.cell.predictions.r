@@ -108,6 +108,8 @@
   dimnames(prediction)[[2]] <- colnames(trait_table)
   dimnames(prediction)[[3]] <- thresholds
   
+
+  
   #make variance table showing the variance in trait abundance
   #variances is trait x threshold
   if(!is.null(use_cov)){
@@ -124,7 +126,7 @@
   
   #use the max variance as the threshold for each trait
   which.threshold <- apply(variances, 1, which.max)
-  
+  which.threshold[which.threshold == 1] <- 2
   #create a matrix of traits and thresholds used
   trait_thresholds <- matrix(0, ntraits, 1)
   rownames(trait_thresholds) <- rownames(variances)

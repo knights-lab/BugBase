@@ -24,8 +24,8 @@
 	#Subset 16S table and otu table to include only otus within the 
 	#	otu table
 	otus_keep <- intersect(rownames(otu_table),rownames(copyNo_table))
-	otu_table <- otu_table[otus_keep,]
-	copyNo_table <- copyNo_table[otus_keep,]
+	otu_table <- otu_table[otus_keep,,drop=F]
+	copyNo_table <- copyNo_table[otus_keep,,drop=F]
 
 	#make 16S normalized otu table by dividing each count by the copy number
 	#	normalized_otus is otus by samples
