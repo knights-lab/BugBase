@@ -30,8 +30,13 @@
 	#OTUs are now rows
 	otu_table <- t(otu_table)
 	otus_keep <- intersect(rownames(otu_table),rownames(gg_taxonomy))
+	if(length(otus_keep) < nrow(otu_table)){
+		print("Some OTUs did not have a taxonomy associated. Did you pick against Greengenes 97% or IMG?")
+	}
 	gg_taxonomy <- gg_taxonomy[otus_keep,, drop=F]
-	
+	otu_table <- otu_table[otus_keep,,drop=F]
+
+
 	#subset the gg taxonomy to the level specified (default=2)
 	names_split <- array(dim=c(length(gg_taxonomy[,1]), 7))
 	otu_names <- as.character(gg_taxonomy[,1])
@@ -58,13 +63,13 @@
 
 	#add taxonomy as the rownames in the otu table
 	rownames(otu_table) <- names_split[,taxa_level]
-  
+
 	#aggregate to the same taxa
 	#you must t() again, to have samples as columns
 	otu_table <- t(sapply(by(otu_table,rownames(otu_table),colSums),identity))
-	
+
 	#ensure same order of samples in map and otu table
-	map <- map[colnames(otu_table),]
+	map <- map[colnames(otu_table),,drop=F]
 
 	#set colors for plotting and legend creation
 	#get palette 1 from R ColorBrewer
@@ -95,7 +100,7 @@
 								rownames(positive_otu_table),colSums),identity))
 		
 		#ensure same order of samples in map and otu table
-		map <- map[colnames(positive_otu_table),]
+		map <- map[colnames(positive_otu_table),,drop=F]
 		
 		#melt the otu_table by sample id
 		melted_otu_table <- melt(positive_otu_table)
@@ -129,8 +134,14 @@
 
 		taxa_list <- c(taxa_list, unique(group_collapsed_otus$Taxa))
  		
- 		group_collapsed_otus[,map_column] <- as.character(group_collapsed_otus[,map_column])
- 		group_collapsed_otus <- group_collapsed_otus[order(group_collapsed_otus[,map_column]),]
+ 		if(isTRUE(opts$continuous)){
+ 			group_collapsed_otus[,map_column] <- as.numeric(as.character(group_collapsed_otus[,map_column]))
+ 			group_collapsed_otus <- group_collapsed_otus[order(group_collapsed_otus[,map_column]),]
+			group_collapsed_otus[,map_column] <- as.character(group_collapsed_otus[,map_column])
+ 		} else{
+ 			group_collapsed_otus[,map_column] <- as.character(group_collapsed_otus[,map_column])
+ 			group_collapsed_otus <- group_collapsed_otus[order(group_collapsed_otus[,map_column]),]
+ 		}
     
 		#make the plot
 		taxa_plot <- NULL
@@ -156,6 +167,7 @@
 		# Plot the taxa summary
 		print(taxa_plot)
 		dev.off()
+
 	}
 
 	#subset to the taxa that met the cutoff

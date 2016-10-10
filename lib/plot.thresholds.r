@@ -10,8 +10,8 @@
 	dir <- paste(output, "thresholds", sep="/")
 
 	#ensure same order of samples in map and traits
-	map <- map[rownames(prediction_array),]
-
+	map <- map[rownames(prediction_array),,drop=F]
+	
 	#define groups
 	groups <- sort(unique(map[,map_column]))
 

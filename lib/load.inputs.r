@@ -48,10 +48,14 @@
     
     #define treatment groups
     if(is.null(groups)){
-      groups <- unique(map[,map_column])
-      groups <- lapply(groups, as.character)
-      if(length(groups) <= 1){
-        stop("\nError: a minimum of two groups must be tested\n")
+      if(isTRUE(opts$continuous)){
+        groups <- as.numeric(map[,map_column])
+      } else {
+        groups <- unique(map[,map_column])
+        groups <- lapply(groups, as.character)
+        if(length(groups) <= 1){
+          stop("\nError: a minimum of two groups must be tested\n")
+        }
       }
     } else {
       #use user-defined groups
@@ -74,22 +78,21 @@
           stop("\nError listed above\n")
         }
       }
-    }
-    
     #factor groups so they appear in user-listed order
-    map[,map_column] <- factor(map[,map_column],groups)
-    
+    map[,map_column] <- factor(map[,map_column],groups)  
+    }
+
     #Drop any samples with no OTUs
     otu_table <- otu_table[,colSums(otu_table) > 1]
     
     #get indices of which rows to keep
     ix.keep <- map[,map_column] %in% groups
     #keep only subset of samples belonging to requested groups
-    new_map <- droplevels(as.data.frame(map[ix.keep,]))
+    new_map <- droplevels(as.data.frame(map[ix.keep,,drop=F]))
     
     #keep only samples that intersect between the map and otu table
     intersect_btwn <- intersect(rownames(map),colnames(otu_table))
-    new_map <- map[intersect_btwn,]
+    new_map <- map[intersect_btwn,,drop=F]
     new_otu <- droplevels(as.data.frame(otu_table[,intersect_btwn]))
     
     #print the groups to be tested

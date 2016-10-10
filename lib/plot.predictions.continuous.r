@@ -16,10 +16,10 @@
 	#cat(dim(map),"\n")
 
 	#make sure map column is numeric
-	map[,map_column] <- as.numeric(as.character(map[,map_column]))
+	map[,map_column] <- map[,map_column,drop=F]
 	
 	#ensure same order of samples in map and traits
-	map <- map[rownames(predictions),]
+	map <- map[rownames(predictions),,drop=F]
 	
 	#define traits to test
 	traits<- colnames(predictions)
