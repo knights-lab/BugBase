@@ -92,7 +92,7 @@
   
   #prediction is samples x traits x thresholds
   prediction <- array(0, dim=c(nsamples, ntraits, nthresholds))
-  
+ 
   for(i in 1:length(thresholds)){
     th <- thresholds[i]
     trait_table_gt <- trait_table > th
@@ -101,14 +101,11 @@
     trait_table_th <- trait_table_gt | trait_table_eq
     prediction[,,i] <- otu_table %*% trait_table_th
   }
-  
   #name the rows (samples), columns (traits) and layers (thresholds)
   # of the prediction array
   dimnames(prediction)[[1]] <- rownames(otu_table)
   dimnames(prediction)[[2]] <- colnames(trait_table)
   dimnames(prediction)[[3]] <- thresholds
-  
-
   
   #make variance table showing the variance in trait abundance
   #variances is trait x threshold

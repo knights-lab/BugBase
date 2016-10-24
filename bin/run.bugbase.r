@@ -60,13 +60,17 @@ option_list <- list(
   make_option(c("-o", "--output"), type="character", default=".",
               help="output directory [default %default]"),
   make_option(c("-t", "--taxalevel"), type="character", default=NULL,
-              help="taxa level to plot otu contributions by, default is 2 (phylum) 
-              [default %default]"),
+              help="taxa level to plot otu contributions by, default is 
+              2 (phylum) [default %default]"),
   make_option(c("-p", "--phenotype"), type="character", default=NULL,
-              help="specific traits (phenotypes) to predict, separated by commas, 
-              no spaces [default %default]"),
+              help="specific traits (phenotypes) to predict, separated by 
+              commas, no spaces [default %default]"),
+  make_option(c("-x", "--predict"), action="store_true", default=FALSE,
+              help="only output the prediction table, do not make plots 
+              [default %default]"),
   make_option(c("-T", "--threshold"), type="character", default=NULL,
-              help="threshold to use, must be between 0 and 1 [default %default]"),
+              help="threshold to use, must be between 0 and 1 
+              [default %default]"),
   make_option(c("-g", "--groups"), type="character", default=NULL,
               help="treatment groups of samples, separated by commas, no spaces 
               [default %default]"),
@@ -96,13 +100,17 @@ if(isTRUE(opts$wgs)){
   copy_no_file <- paste(db_fp, "16S_13_5_precalculated.txt.gz", sep='/')
   taxonomy <- paste(db_fp, "img_otu_taxonomy.txt.gz", sep='/')
   if(isTRUE(opts$kegg)){
-    trait_table <- paste(db_fp, "kegg_modules_img_precalculated.txt.gz", sep='/')
-    if(is.null(opts$phenotype)){
-      stop("A list of pathways must be specified when using kegg modules")
+    trait_table <- paste(db_fp, 
+      "kegg_modules_img_precalculated.txt.gz", sep='/')
+    if(!isTRUE(opts$predict)){
+      if(is.null(opts$phenotype)){
+      stop("A list of modules must be specified when using KEGG")
+      }
     }
   } else {
     if(is.null(opts$usertable)){
-      trait_table <- paste(db_fp, "default_traits_img_precalculated.txt.gz", sep='/')
+      trait_table <- paste(db_fp, 
+        "default_traits_img_precalculated.txt.gz", sep='/')
     } else{
       trait_table <- opts$usertable
     }
@@ -112,12 +120,15 @@ if(isTRUE(opts$wgs)){
   taxonomy <- paste(db_fp, "97_otu_taxonomy.txt.gz", sep='/')
   if(isTRUE(opts$kegg)){
     trait_table <- paste(db_fp, "kegg_modules_precalculated.txt.gz", sep='/')
-    if(is.null(opts$phenotype)){
-      stop("A list of pathways must be specified when using kegg modules")
+    if(!isTRUE(opts$predict)){
+      if(is.null(opts$phenotype)){
+      stop("A list of modules must be specified when using KEGG")
+      }
     }
   } else {
     if(is.null(opts$usertable)){
-      trait_table <- paste(db_fp, "default_traits_precalculated.txt.gz", sep='/')
+      trait_table <- paste(db_fp, 
+        "default_traits_precalculated.txt.gz", sep='/')
     } else{
       trait_table <- opts$usertable
     }
@@ -127,24 +138,32 @@ if(isTRUE(opts$wgs)){
 #Check for 'plot all'
 #If not 'plot all', check map and column exist
 if(!isTRUE(opts$all)){
-  if(is.null(opts$mappingfile)){
+  if(isTRUE(opts$predict)){
+    map <- NULL
+    mapcolumn <- NULL
+    groups <- NULL
+
+  } else {
+    if(is.null(opts$mappingfile)){
     stop("Mapping file not specified. 
          To run BugBase without a mapping file use '-a'")
-  } else {
-    map <- opts$mappingfile
-  }
-  if(is.null(opts$mapcolumn)){
-    stop("Column header must be specified")
-  } else {
-    mapcolumn <- opts$mapcolumn
+    } else {
+      map <- opts$mappingfile
+    }
+    if(is.null(opts$mapcolumn)){
+      stop("Column header must be specified")
+    } else {
+      mapcolumn <- opts$mapcolumn
+      groups <- opts$groups
+    }
   }
 } else {
   map <- NULL
   mapcolumn <- NULL
+  groups <- NULL
 }
 
-#Define groups
-groups <- opts$groups
+# If continuous, remove groups
 if(isTRUE(opts$continuous)){
   groups <- NULL #plotting by continuous ignores groups in the column
 }
@@ -219,7 +238,8 @@ if(isTRUE(opts$wgs)){
   print("16S copy number normalizing OTU table...")
   #16S copy normalize otu table
   #Required: copyNo_table, loaded otu
-  normalized_otus <- copyNo.normalize.otu(copy_no_file, loaded.inputs$otu_table, output)
+  normalized_otus <- copyNo.normalize.otu(copy_no_file, 
+    loaded.inputs$otu_table, output)
 }
 
 print("Predicting phenotypes...")
@@ -240,79 +260,81 @@ if(isTRUE(opts$wgs)){
                                                 use_cov)
 }
 
-print("Plotting thresholds...")
-#Plot thresholds
-#Two options - one with no mapping file, one with mapping file
-if(is.null(threshold_set)){
-  if(isTRUE(opts$all)){
-    #Required: predictions
-    plot.thresholds.all(prediction_outputs$predictions)
-  } else {
-    #Required: predictions, map and map column
-    plot.thresholds(prediction_outputs$predictions, 
+if(isTRUE(opts$predict)){
+  print("BugBase analysis complete")
+} else{
+  print("Plotting thresholds...")
+  #Plot thresholds
+  #Two options - one with no mapping file, one with mapping file
+  if(is.null(threshold_set)){
+    if(isTRUE(opts$all)){
+      #Required: predictions
+      plot.thresholds.all(prediction_outputs$predictions)
+    } else {
+      #Required: predictions, map and map column
+      plot.thresholds(prediction_outputs$predictions, 
                     loaded.inputs$map, 
                     loaded.inputs$map_column)
+    }
   }
-}
 
-print("Plotting predictions...")
-#Plot predictions
-#Three options: one without a mapping file, 
-#   one with a mapping file, continous
-#   one with a mapping file, discrete
-if(isTRUE(opts$all)){
-  #Required: predictions
-  plot.predictions.all(prediction_outputs$final_predictions)
-} else {
-  if(isTRUE(opts$continuous)){
-    #Required: predictions, map, map column
-    plot.predictions.continuous(prediction_outputs$final_predictions, 
+  print("Plotting predictions...")
+  #Plot predictions
+  #Three options: one without a mapping file, 
+  #   one with a mapping file, continous
+  #   one with a mapping file, discrete
+  if(isTRUE(opts$all)){
+    #Required: predictions
+    plot.predictions.all(prediction_outputs$final_predictions)
+  } else {
+    if(isTRUE(opts$continuous)){
+      #Required: predictions, map, map column
+      plot.predictions.continuous(prediction_outputs$final_predictions, 
+                                  loaded.inputs$map, 
+                                  loaded.inputs$map_column)
+    } else {
+      #Required: predictions, map, map column
+      plot.predictions.discrete(prediction_outputs$final_predictions, 
                                 loaded.inputs$map, 
                                 loaded.inputs$map_column)
-  } else {
-    #Required: predictions, map, map column
-    plot.predictions.discrete(prediction_outputs$final_predictions, 
-                              loaded.inputs$map, 
-                              loaded.inputs$map_column)
+    }
   }
-}
 
-print("Plotting OTU contributions...")
-#Plot otu contributions (taxa summaries)
-#Two options, with a mapping file or without
-if(isTRUE(opts$wgs)){
-  if(isTRUE(opts$all)){
-    #Required: otu contributions, normalized otu table, taxonomy
-    otu.contributions.all.r(prediction_outputs$otus_contributing,
+  print("Plotting OTU contributions...")
+  #Plot otu contributions (taxa summaries)
+  #Two options, with a mapping file or without
+  if(isTRUE(opts$wgs)){
+    if(isTRUE(opts$all)){
+      #Required: otu contributions, normalized otu table, taxonomy
+      otu.contributions.all.r(prediction_outputs$otus_contributing,
                             prediction_outputs$otu_table_subset,
                             taxonomy, taxa_level)
+    } else {
+      #Required: otu contributions, normalized otu table, taxonomy
+      #   map, map column, taxa_level
+      otu.contributions(prediction_outputs$otus_contributing, 
+                        prediction_outputs$otu_table_subset, 
+                        taxonomy, 
+                        loaded.inputs$map, 
+                        loaded.inputs$map_column,
+                        taxa_level)
+    }
   } else {
-    #Required: otu contributions, normalized otu table, taxonomy
-    #   map, map column, taxa_level
-    otu.contributions(prediction_outputs$otus_contributing, 
-                      prediction_outputs$otu_table_subset, 
-                      taxonomy, 
-                      loaded.inputs$map, 
-                      loaded.inputs$map_column,
-                      taxa_level)
-  }
-} else {
-  if(isTRUE(opts$all)){
-    #Required: otu contributions, normalized otu table, taxonomy
-    otu.contributions.all.r(prediction_outputs$otus_contributing,
+    if(isTRUE(opts$all)){
+      #Required: otu contributions, normalized otu table, taxonomy
+      otu.contributions.all.r(prediction_outputs$otus_contributing,
                             prediction_outputs$otu_table_subset,
                             taxonomy, taxa_level)
-  } else {
-    #Required: otu contributions, normalized otu table, taxonomy
-    #   map, map column, taxa_level
-    otu.contributions(prediction_outputs$otus_contributing, 
-                      prediction_outputs$otu_table_subset, 
-                      taxonomy, 
-                      loaded.inputs$map, 
-                      loaded.inputs$map_column,
-                      taxa_level)
+    } else {
+      #Required: otu contributions, normalized otu table, taxonomy
+      #   map, map column, taxa_level
+      otu.contributions(prediction_outputs$otus_contributing, 
+                        prediction_outputs$otu_table_subset, 
+                        taxonomy, 
+                        loaded.inputs$map, 
+                        loaded.inputs$map_column,
+                        taxa_level)
+    }
   }
-}
-
 print("BugBase analysis complete")
-
+}

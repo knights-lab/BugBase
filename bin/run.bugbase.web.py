@@ -75,6 +75,10 @@ def make_option_parser():
 		default=None,
 		type='string',
 		help="specific phenotypes to predict, comma separated list, no spaces")
+	parser.add_option("-x","--predict",
+		default=False,
+		action="store_true",
+		help="only output the prediction table, do not make plots")
 	parser.add_option("-T","--threshold",
 		default=None,
 		type='float',
@@ -102,7 +106,11 @@ def make_option_parser():
 	parser.add_option("-z","--continuous",
 		action="store_true",
 		default=False,
-		help="Plot data according to a continuous variable")
+		help="Plot data according to a continuous variable (picked against IMG)")
+	parser.add_option("-w","--wgs",
+		action="store_true",
+		default=False,
+		help="Data is whole genome shotgun data")
 	return parser
 
 def run_commands(commands, print_only=False, verbose=True, error_on_fail=True):
@@ -155,6 +163,11 @@ if __name__ == '__main__':
 	else:
 		phenos = ""
 
+	if options.predict:
+		predict_only = " -x "
+	else:
+		predict_only = ""
+
 	if options.threshold:
 		thres = " -T %s" %(options.threshold)
 	else:
@@ -191,55 +204,69 @@ if __name__ == '__main__':
 	else:
 		continuous = ""
 
-	if options.plot_all is False:
-		if options.mapping_file is None:
-			print "[ERROR_MESSAGE]Mapping file must be specified"
-		if options.map_column is None:
-			print "[ERROR_MESSAGE]Column header must be specified"
+	if options.wgs is True:
+		wgs = " -z"
+	else:
+		wgs = ""
 
-		# Make sure map column is valid
-		with open(map_file, 'rU') as input_map:
-			reader = csv.reader(input_map, delimiter='\t')
-			headers = reader.next()
-		if col_name in headers:
-			print col_name + " was specified as map column header\n"
-		else:
-			print "[ERROR_MESSAGE]Column header specified does not exist in mapping file\n"
-			print "[ERROR_MESSAGE]These are the available column headers: "+ ', '.join(headers)
-			sys.exit()
-		
-		# If groups are specified, check they are valid
-		if options.groups is not None:
-			groups_avail = []
+	if options.plot_all is False:
+		if options.predict is False:
+			if options.mapping_file is None:
+				print "[ERROR_MESSAGE]Mapping file must be specified"
+				sys.exit()
+			if options.map_column is None:
+				print "[ERROR_MESSAGE]Column header must be specified"
+				sys.exit()
+
+			# Make sure map column is valid
 			with open(map_file, 'rU') as input_map:
 				reader = csv.reader(input_map, delimiter='\t')
 				headers = reader.next()
-				column_index = headers.index(col_name)
-				for row in reader:
-					name = str(row[column_index])
-					groups_avail.append(name)   
-			for group_defined in groups_list:
-				if group_defined in groups_avail:
-					if len(groups_list) <= 1:
-						print "[ERROR_MESSAGE]A minimum of two groups must be tested"
+			if col_name in headers:
+				print col_name + " was specified as map column header\n"
+			else:
+				print "[ERROR_MESSAGE]Column header specified does not exist in mapping file\n"
+				print "[ERROR_MESSAGE]These are the available column headers: "+ ', '.join(headers)
+				sys.exit()
+		
+			# If groups are specified, check they are valid
+			if options.groups is not None:
+				groups_avail = []
+				with open(map_file, 'rU') as input_map:
+					reader = csv.reader(input_map, delimiter='\t')
+					headers = reader.next()
+					column_index = headers.index(col_name)
+					for row in reader:
+						name = str(row[column_index])
+						groups_avail.append(name)   
+				for group_defined in groups_list:
+					if group_defined in groups_avail:
+						if len(groups_list) <= 1:
+							print "[ERROR_MESSAGE]A minimum of two groups must be tested"
+							sys.exit()
+					else:
+						groups_avail = list(set(groups_avail))
+						print "[ERROR_MESSAGE]Groups specified do not exist in mapping file"
+						print "[ERROR_MESSAGE]These are the groups available under " + col_name + " header: " + ', '.join(groups_avail)
 						sys.exit()
-				else:
-					groups_avail = list(set(groups_avail))
-					print "[ERROR_MESSAGE]Groups specified do not exist in mapping file"
-					print "[ERROR_MESSAGE]These are the groups available under " + col_name + " header: " + ', '.join(groups_avail)
-					sys.exit()
-			
+	
 	# If threshold is user-specified, state what will be used
 	if options.threshold is not None:
 		print "[ERROR_MESSAGE]A user-specified threshold of %s will be used for all traits" %(options.threshold)
+
+	# If kegg is specified, check that modules are valid
+	if options.kegg is True:
+		if options.predict is False:
+			if options.phenotypes is None:
+				print "[ERROR_MESSAGE]When using KEGG, modules to plot must be specified with a comma separated list"
 
 	commands = []
 						
 	# Run the run.bugase.web.r script
 	
 	#cmd = "/soft/r/3.2.2/linux_x86_64_old/bin/Rscript /web/research/bugbase.cs.umn.edu/BugBase/bin/run.bugbase.web.r -h" 
-	cmd = "Rscript /web/research/bugbase.cs.umn.edu/BugBase/bin/run.bugbase.web.r" + otu_table + mapping + column + phenos + taxa + groups + thres + plot_all + cov + kegg + continuous + output
-	#cmd = "/soft/r/3.2.2/linux_x86_64_old/bin/Rscript /web/research/bugbase.cs.umn.edu/BugBase/bin/test.r" + otu_table + mapping + column + phenos + taxa + groups + thres + plot_all + cov + kegg + continuous + output
+	cmd = "Rscript /web/research/bugbase.cs.umn.edu/BugBase/bin/run.bugbase.web.r" + otu_table + mapping + column + phenos + predict_only + taxa + groups + thres + plot_all + cov + kegg + wgs + continuous + output 
+	#cmd = "/soft/r/3.2.2/linux_x86_64_old/bin/Rscript /web/research/bugbase.cs.umn.edu/BugBase/bin/test.r" + otu_table + mapping + column + phenos + predict_only + taxa + groups + thres + plot_all + cov + kegg + wgs+ continuous + output
 	commands.append(cmd)
 	
 	# Run commands

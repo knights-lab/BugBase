@@ -15,8 +15,14 @@
   
   #otu_table is otus (rows) x samples (columns)
   if(otu_ext == "txt"){
-    otu_table <- as.matrix(read.table(otu_table, sep='\t', head=T, row=1, 
+    line1 <-readLines(otu_table,n=1)
+    if(line1=="# Constructed from biom file") {
+      otu_table <- as.matrix(read.table(otu_table, sep='\t', head=T, row=1, 
                                       check=F, comment='', skip=1))
+    } else {
+      otu_table <-as.matrix(read.table(otu_table, sep='\t', head=T, row=1, 
+                                      check=F, comment=''))
+    }
   } else {
     if(otu_ext == "biom"){
       otu_table <- as.matrix(biom_data(read_biom(otu_table)))
@@ -25,8 +31,16 @@
     }
   }
   
+
   if(is.null(map)){
-    cat("\nNo mapping file was specified. All samples will be predicted.\n")
+    cat("\nEither \'predict only\' or \'plot all\' specified. All samples will be predicted.\n")
+
+    #Drop any samples with no OTUs
+    otu_table <- otu_table[,colSums(otu_table) > 1]
+
+    new_otu <- otu_table
+    new_map <- NULL
+
   } else {
     #map is samples x metadata
     map <- read.table(map,sep='\t',head=T,row=1,check=F,comment='')
