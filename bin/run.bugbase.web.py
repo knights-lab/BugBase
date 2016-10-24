@@ -164,7 +164,7 @@ if __name__ == '__main__':
 		phenos = ""
 
 	if options.predict:
-		predict_only = " -x "
+		predict_only = " -x"
 	else:
 		predict_only = ""
 
@@ -205,7 +205,7 @@ if __name__ == '__main__':
 		continuous = ""
 
 	if options.wgs is True:
-		wgs = " -z"
+		wgs = " -w"
 	else:
 		wgs = ""
 
