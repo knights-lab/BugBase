@@ -61,21 +61,24 @@ BugBase has one main command, `run.bugbase.r`, that will:
 <dl>
 	<dt>Required</dt>
 	<dd> -i     input OTU table, picked against the GreenGenes database (16S) or IMG (WGS) (.txt or .biom (json))
-	<dd> -m     mapping file (tab-delimitted text file)
-	<dd> -c     map column header to plot by (which column denotes treatment groups)
 	<dd> -o     output directory name
 	
 	<dt>Optional</dt>
 	<dd> -w	 	Data is whole genome shotgun data (picked against IMG database)
-	<dd> -t	 	Taxa level to plot otu contributions by (number 1-7)
-	<dd> -p 	List only one phenotype to predict (text, exact name match)
-	<dd> -T 	Specify a threshold to use for all traits (number 0-1)
+	<dd> -a 	Plot all samples (no stats will be run)
+	<dd> -x		Output prediction files only, no plots will be made
+	<dd> -m     mapping file (tab-delimitted text file)
+	<dd> -c     map column header to plot by (which column denotes treatment groups)
 	<dd> -g 	Specify subset of groups in map column to plot (list, comma separated)
-	<dd> -u	 	Use a user-define trait table. Absolute file path must be specified
-	<dd> -k 	Use the kegg pathways instead of default traits (Note: you must specify which pathways!)
 	<dd> -z 	Data is of type continuous 
 	<dd> -C 	Use covariance instead of variance to determine thresholds
-	<dd> -a 	Plot all samples (no stats will be run)
+	<dd> -t	 	Taxa level to plot otu contributions by (number 1-7)
+	<dd> -T 	Specify a threshold to use for all traits (number 0-1)
+	<dd> -k 	Use the KEGG modules instead of default traits (Note: you must specify which modules!)
+	<dd> -p 	List modules or traits to predict (comma seperated list, no spaces)
+	<dd> -u	 	Use a user-define trait table. Absolute file path must be specified
+
+	
 </dl>
 
 
