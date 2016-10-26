@@ -38,7 +38,7 @@ run.bugbase.r -h
 ```
 
 ### Demo
-BugBase comes with a test dataset in the bugbase/doc/data directory, to analyze this data set you would type the following:
+BugBase comes with a test dataset in the bugbase/doc/data directory. To analyze this data set you would type the following:
 
 ```
 run.bugbase.r -i $BUGBASE_PATH/doc/data/HMP_s15.txt -m $BUGBASE_PATH/doc/data/HMP_map.txt -c HMPBODYSUBSITE -o output
@@ -81,6 +81,27 @@ BugBase has one main command, `run.bugbase.r`, that will:
 	
 </dl>
 
+### BugBase compatible OTU tables
 
+BugBase takes in QIIME compatible OTU tables in the classic (.txt) or json version (.biom).  Below are some instructions regarding OTU table generation for downstream BugBase use.
+
+16S data:
+- Closed reference OTU picking with the Greengenes 97% representative set
+- Do not include taxonomy if in the classic form (.txt)
+- Counts, not relative abundance
+
+WGS data:
+- Closed referene OTU picking with the IMG reference sequences
+
+To generate a BugBase compatible OTU table from WGS data, please follow the steps below:
+
+1. Download the UTree release specific to your operating system by following the first step here. [Absolute README link](https://https://github.com/knights-lab/UTree) Stop when you have reached "Compliation", as that step and those following it are not needed for OTU picking purposes.
+2. Install NINJA-SHOGUN by following the instruction here. [Absolute README link](https://github.com/knights-lab/NINJA-SHOGUN) Only complete the initial steps.  Stop when you have reached "Building a Database", as that step and those following it are not needed for OTU picking purposes.
+3. Download and unzip the shogun database (IMG reference sequences and maps) needed for OTU picking here. Absolute README link](http://z.umn.edu/bugbaseimgshogun)
+4. Run OTU picking with the following commands:
+	- source activate shogun
+	- shogun_bugbase -i <path_to_sequences> -o <output_path> -u <path_to_shogun_bugbase_db>
+5. Deactivate NINA-SHOGUN with:
+	- source deactivate
 
 =======
