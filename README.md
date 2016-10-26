@@ -100,11 +100,14 @@ To generate a BugBase compatible OTU table from WGS data, please follow the step
 3. Download and unzip the SHOGUN-BugBase database (IMG reference sequences and maps) needed for OTU picking [here.](http://z.umn.edu/bugbaseimgshogun "shogun-bugbase-db")
 4. Run OTU picking with the following commands.  Update the `shogun_bugbase` command to be specific to the filepaths for your input sequences and the SHOGUN-BugBase database you downloaded.  Your input sequences should be in one directory, with one .fna file per sequence. The name of each .fna file should be the name of the sample it corresponds to. Once OTU picking is complete, you will have an OTU table in classic format (.txt) called 'taxa_counts.txt' within the output directory specified.
 ```
-source activate shogun      #activate the shogun environment
+# activate the shogun environment
+source activate shogun      
 
-shogun_bugbase -i path_to_sequences -o output_path -u path_to_shogun_bugbase_db      #run OTU picking with shogun
+# run OTU picking with shogun
+shogun_bugbase -i path_to_sequences -o output_path -u path_to_shogun_bugbase_db
 
-source deactivate     #deactivate the shogun environment
+# deactivate the shogun environment
+source deactivate
 ```
 
 
