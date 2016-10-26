@@ -98,16 +98,14 @@ To generate a BugBase compatible OTU table from WGS data, please follow the step
 1. Download the UTree release specific to your operating system by following the first step [here.](https://github.com/knights-lab/UTree "UTree") Stop when you have reached "Compilation", as that step and those following it are not needed for OTU picking purposes.
 2. Install NINJA-SHOGUN by following the instruction [here.](https://github.com/knights-lab/NINJA-SHOGUN "SHOGUN") Only complete the initial steps.  Stop when you have reached "Building a Database", as that step and those following it are not needed for OTU picking purposes.
 3. Download and unzip the SHOGUN-BugBase database (IMG reference sequences and maps) needed for OTU picking [here.](http://z.umn.edu/bugbaseimgshogun "shogun-bugbase-db")
-4. Run OTU picking with the following commands.  Update the `shogun_bugbase` command to be specific to the filepaths for your input sequences and the SHOGUN-BugBase database you downloaded.  Your input sequences should be in one directory, with one .fna file per sequence. The name of each .fna file should be the name of the sample it corresponds to.
+4. Run OTU picking with the following commands.  Update the `shogun_bugbase` command to be specific to the filepaths for your input sequences and the SHOGUN-BugBase database you downloaded.  Your input sequences should be in one directory, with one .fna file per sequence. The name of each .fna file should be the name of the sample it corresponds to. Once OTU picking is complete, you will have an OTU table in classic format (.txt) called 'taxa_counts.txt' within the output directory specified.
+```
+source activate shogun      #activate the shogun environment
 
-```
-source activate shogun
-shogun_bugbase -i path_to_sequences -o output_path -u path_to_shogun_bugbase_db
-```
-5. Deactivate NINA-SHOGUN with:
+shogun_bugbase -i path_to_sequences -o output_path -u path_to_shogun_bugbase_db      #run OTU picking with shogun
 
+source deactivate     #deactivate the shogun environment
 ```
-source deactivate
-```
+
 
 =======
