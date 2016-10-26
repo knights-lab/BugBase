@@ -1,7 +1,7 @@
 ## BugBase Usage and Installation
 
 ### Standard Users
-Standard users can analyze their microbiome samples with the default phenotypes, as well as the kegg pathways. 
+Standard users can analyze their microbiome samples with the default phenotypes, as well as the KEGG pathways. 
 
 ### Dependencies
 
@@ -31,7 +31,7 @@ export PATH=$PATH:$BUGBASE_PATH/bin
 
 Note: you will need change the paths to match your system and which directory you have downloaded BugBase into. You might need to put it in ~/.bashrc instead of ~/.bash_profile depending on your system. After adding these paths to the .bash_profile or ~/.bashrc, reopen the terminal or login again.
 
-To check your install type the following in the command line.  It should print the options available to run BugBase.
+To check your install, type the following in the command line.  It should print the options available to run BugBase.
 
 ```
 run.bugbase.r -h 
@@ -52,30 +52,30 @@ BugBase has one main command, `run.bugbase.r`, that will:
 -	Normalize your OTU table according to 16S copy number (WGS data will not be normalized)
 -	Plot the variance in phenotype possession for thresholds 0-1
 -	Determine which threshold to set for each microbiome phenotype
--	Deterimine the proportion of each microbiome with a given phenotype
+-	Determine the proportion of each microbiome with a given phenotype
 -	Plot the proportions of the microbiome with a given phenotype
 -	Statistically analyze the microbiome phenotype proportions according the treatment groups specified, or by using regression for continuous data
--	Plot otu contributions for each phenotype
+-	Plot OTU contributions for each phenotype
 
 
 <dl>
 	<dt>Required</dt>
-	<dd> -i     input OTU table, picked against the GreenGenes database (16S) or IMG (WGS) (.txt or .biom (json))
+	<dd> -i     input OTU table, picked against the Greengenes database (16S) or IMG (WGS) (.txt or .biom (json))
 	<dd> -o     output directory name
 	
 	<dt>Optional</dt>
 	<dd> -w	 	Data is whole genome shotgun data (picked against IMG database)
 	<dd> -a 	Plot all samples (no stats will be run)
 	<dd> -x		Output prediction files only, no plots will be made
-	<dd> -m     mapping file (tab-delimitted text file)
+	<dd> -m     mapping file (tab-delimited text file)
 	<dd> -c     map column header to plot by (which column denotes treatment groups)
 	<dd> -g 	Specify subset of groups in map column to plot (list, comma separated)
 	<dd> -z 	Data is of type continuous 
 	<dd> -C 	Use covariance instead of variance to determine thresholds
-	<dd> -t	 	Taxa level to plot otu contributions by (number 1-7)
+	<dd> -t	 	Taxa level to plot OTU contributions by (number 1-7)
 	<dd> -T 	Specify a threshold to use for all traits (number 0-1)
 	<dd> -k 	Use the KEGG modules instead of default traits (Note: you must specify which modules!)
-	<dd> -p 	List modules or traits to predict (comma seperated list, no spaces)
+	<dd> -p 	List modules or traits to predict (comma separated list, no spaces)
 	<dd> -u	 	Use a user-define trait table. Absolute file path must be specified
 
 	
@@ -91,7 +91,7 @@ BugBase takes in QIIME compatible OTU tables in the classic (.txt) or json versi
 - Counts, not relative abundance
 
 WGS data:
-- Closed referene OTU picking with the IMG reference sequences
+- Closed reference OTU picking with the IMG reference sequences
 
 To generate a BugBase compatible OTU table from WGS data, please follow the steps below:
 
