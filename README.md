@@ -100,10 +100,12 @@ To generate a BugBase compatible OTU table from WGS data, please follow the step
 3. Download and unzip the SHOGUN-BugBase database (IMG reference sequences and maps) needed for OTU picking [here.](http://z.umn.edu/bugbaseimgshogun "shogun-bugbase-db")
 4. Run OTU picking with the following commands:
 
-```source activate shogun
-shogun_bugbase -i <path_to_sequences> -o <output_path> -u <path_to_shogun_bugbase_db>
+```
+source activate shogun
+shogun_bugbase -i path_to_sequences -o output_path -u path_to_shogun_bugbase_db
 ```
 5. Deactivate NINA-SHOGUN with:
+
 ```
 source deactivate
 ```
