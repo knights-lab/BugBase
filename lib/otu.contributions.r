@@ -36,7 +36,6 @@
 	gg_taxonomy <- gg_taxonomy[otus_keep,, drop=F]
 	otu_table <- otu_table[otus_keep,,drop=F]
 
-
 	#subset the gg taxonomy to the level specified (default=2)
 	names_split <- array(dim=c(length(gg_taxonomy[,1]), 7))
 	otu_names <- as.character(gg_taxonomy[,1])
@@ -114,6 +113,7 @@
 		group_collapsed_otus <- ddply(melted_otu_table, 
 									.(Taxa,melted_otu_table[,map_column]), 
 									summarize, Count = mean(Count))
+
 		colnames(group_collapsed_otus)[2] <- map_column
 		
 		#set value for cutoff (1/10 of the highest proportion)
@@ -142,10 +142,11 @@
  			group_collapsed_otus[,map_column] <- as.character(group_collapsed_otus[,map_column])
  			group_collapsed_otus <- group_collapsed_otus[order(group_collapsed_otus[,map_column]),]
  		}
-    
+
+ 		colnames(group_collapsed_otus)[2] <- "this_column"
 		#make the plot
 		taxa_plot <- NULL
-		taxa_plot <- ggplot(group_collapsed_otus, aes_string(x = map_column, 
+		taxa_plot <- ggplot(group_collapsed_otus, aes_string(x = "this_column", 
 													y = "Count", fill="Taxa")) + 
 			geom_bar(stat="identity", show_guide=FALSE) + 
 			labs(y = "Relative Abundance", x = "") +
