@@ -14,23 +14,27 @@
   otu_ext <- tail(strsplit(otu_table, ".", fixed=T)[[1]], n=1)
   
   #otu_table is otus (rows) x samples (columns)
-  if(otu_ext == "txt"){
-    line1 <-readLines(otu_table,n=1)
-    if(line1=="# Constructed from biom file") {
-      otu_table <- as.matrix(read.table(otu_table, sep='\t', head=T, row=1, 
-                                      check=F, comment='', skip=1))
-    } else {
-      otu_table <-as.matrix(read.table(otu_table, sep='\t', head=T, row=1, 
-                                      check=F, comment=''))
-    }
+  if(!file.exists(otu_table)){
+    cat("\nError: OTU table specified does not exist. Check file path.\n")
+    stop("\nError listed above\n")
   } else {
-    if(otu_ext == "biom"){
-      otu_table <- as.matrix(biom_data(read_biom(otu_table)))
+      if(otu_ext == "txt"){
+      line1 <-readLines(otu_table,n=1)
+      if(line1=="# Constructed from biom file") {
+        otu_table <- as.matrix(read.table(otu_table, sep='\t', head=T, row=1, 
+                                      check=F, comment='', skip=1))
+      } else {
+        otu_table <-as.matrix(read.table(otu_table, sep='\t', head=T, row=1, 
+                                      check=F, comment=''))
+      }
     } else {
-      stop("\nError: otu table must be either .txt or .biom (json)\n")
+      if(otu_ext == "biom"){
+        otu_table <- as.matrix(biom_data(read_biom(otu_table)))
+      } else {
+        stop("\nError: otu table must be either .txt or .biom (json)\n")
+      }
     }
   }
-  
 
   if(is.null(map)){
     cat("\nEither \'predict only\' or \'plot all\' specified. All samples will be predicted.\n")
@@ -43,7 +47,12 @@
 
   } else {
     #map is samples x metadata
-    map <- read.table(map,sep='\t',head=T,row=1,check=F,comment='')
+    if(!file.exists(map)){
+      cat("\nError: Map specified does not exist. Check file path.\n")
+      stop("\nError listed above\n")
+    } else {
+      map <- read.table(map, sep='\t', head=T, row=1 ,check=F, comment='')
+    }
     
     if(is.null(map_column)){
       stop("\nError: No map column specified. To run BugBase without a mapping file use '-a'\n")
