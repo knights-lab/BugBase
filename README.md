@@ -114,13 +114,13 @@ source deactivate
 
 You can create your own traits of interest for BugBase predictions using KEGG orthologies.  To do so, you will need the following:
 
-- A file for each trait that consists of the KO ids involved in the trait/pathway, one KO id per line
-- A directory that houses the trait files mentioned about (one per trait), each trait file name will be used the trait name (exactly) in the BugBase table created
+- A file for each trait that consists of the KO IDs involved in the trait/pathway, one KO ID per line
+- A directory that houses the trait files mentioned about (one per trait), each trait file name will be used as the trait name (exactly) in the BugBase table created
 
 You can create your user-defined custom BugBase input table using `make.user.table.r` that will:
 - create intermediate files for each trait specified
 - merge all intermediate tables into one table that has each trait of interest as a column
-- creae the final BugBase input file will be call "Custom_BugBase_Traits.txt" and it will be located in directory you specified as the input
+- create a final BugBase input file will be called "Custom_BugBase_Traits.txt" and it will be located in directory you specified as the input
 
 <dl>
 	<dt>Required</dt>
@@ -128,6 +128,7 @@ You can create your user-defined custom BugBase input table using `make.user.tab
 	
 	<dt>Optional</dt>
 	<dd> -w	 	traits are for whole genome sequencing, default is 16S
+</dd>
 
 To create a custom BugBase input and run the BugBase predictions:
 
