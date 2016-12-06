@@ -128,7 +128,7 @@ You can create your user-defined custom BugBase input table using `make.user.tab
 	
 	<dt>Optional</dt>
 	<dd> -w	 	traits are for whole genome sequencing, default is 16S
-</dd>
+</dl>
 
 To create a custom BugBase input and run the BugBase predictions:
 
