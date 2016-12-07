@@ -23,7 +23,6 @@
 	traits <- colnames(predictions)
 
 	#define groups
-	print(colnames(map))
 	groups <- sort(unique(map[,map_column]))
 	groups <- lapply(groups, as.character)
 
