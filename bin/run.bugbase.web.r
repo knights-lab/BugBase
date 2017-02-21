@@ -42,6 +42,7 @@ library(beeswarm, lib.loc = lib_location)
 library(biom, lib.loc = lib_location)
 library(labeling, lib.loc = lib_location)
 library(digest, lib.loc = lib_location)
+library(methods)
 
 # Find functions in the lib
 lib_dir <- paste(my_env, "/lib", sep='')
