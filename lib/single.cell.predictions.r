@@ -74,7 +74,7 @@
   if(length(otus_keep)==0){
     stop("Error: no OTU overlap between OTU table and trait table.")
   }
-  
+  print(otus_keep)
   #subset pathway table and otu table to include only otus within the 
   # otu table
   otu_table <- otu_table[,otus_keep,drop=F]
