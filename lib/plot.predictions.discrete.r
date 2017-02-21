@@ -17,10 +17,7 @@
 	#cat(dim(map))
 	
 	#ensure same order of samples in map and traits
-	map <- map[rownames(predictions),]
-	
-	#define groups
-	groups <- sort(unique(map[,map_column]))
+	map <- map[rownames(predictions),,drop=F]
 	
 	#define traits
 	traits <- colnames(predictions)

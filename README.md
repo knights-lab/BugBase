@@ -97,7 +97,7 @@ To generate a BugBase compatible OTU table from WGS data, please follow the step
 
 1. Download the UTree release specific to your operating system by following the first step [here.](https://github.com/knights-lab/UTree "UTree") Stop when you have reached "Compilation", as that step and those following it are not needed for OTU picking purposes.
 2. Install NINJA-SHOGUN by following the instruction [here.](https://github.com/knights-lab/NINJA-SHOGUN "SHOGUN") Only complete the initial steps.  Stop when you have reached "Building a Database", as that step and those following it are not needed for OTU picking purposes.
-3. Download and unzip the SHOGUN-BugBase database (IMG reference sequences and maps) needed for OTU picking [here.](http://z.umn.edu/bugbaseimgshogun "shogun-bugbase-db")
+3. Download and unzip the SHOGUN-BugBase database (IMG reference sequences and maps) needed for OTU picking [here.](https://drive.google.com/open?id=0ByVmiknyDGaiM3M0dDBJMkZuZDg "shogun-bugbase-db")
 4. Run OTU picking with the following commands.  Update the `shogun_bugbase` command to be specific to the filepaths for your input sequences and the SHOGUN-BugBase database you downloaded.  Your input sequences should be in one directory, with one .fna file per sequence. The name of each .fna file should be the name of the sample it corresponds to. Once OTU picking is complete, you will have an OTU table in classic format (.txt) called 'taxa_counts.txt' within the output directory specified.
 ```
 # activate the shogun environment
@@ -109,6 +109,36 @@ shogun_bugbase -i path_to_sequences -o output_path -u path_to_shogun_bugbase_db
 # deactivate the shogun environment
 source deactivate
 ```
+
+### Creating user-defined trait tables for predictions
+
+You can create your own traits of interest for BugBase predictions using KEGG orthologies.  To do so, you will need the following:
+
+- A file for each trait that consists of the KO IDs involved in the trait/pathway, one KO ID per line
+- A directory that houses the trait files mentioned about (one per trait), each trait file name will be used as the trait name (exactly) in the BugBase table created
+
+You can create your user-defined custom BugBase input table using `make.user.table.r` that will:
+- create intermediate files for each trait specified
+- merge all intermediate tables into one table that has each trait of interest as a column
+- create a final BugBase input file will be called "Custom_BugBase_Traits.txt" and it will be located in directory you specified as the input
+
+<dl>
+	<dt>Required</dt>
+	<dd> -i     path to directory housing the files that list the KO IDs per trait
+	
+	<dt>Optional</dt>
+	<dd> -w	 	traits are for whole genome sequencing, default is 16S
+</dl>
+
+To create a custom BugBase input and run the BugBase predictions:
+
+```
+make.user.table.r -i directory_with_trait_files
+
+run.bugbase.r -i path/to/OTU_Table.biom -m path/to/map.txt -c metadata_column -u directory_with_trait_files/Custom_BugBase_Traits.txt -o output_name
+
+```
+
 
 
 =======
