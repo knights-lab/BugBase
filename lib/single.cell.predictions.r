@@ -70,6 +70,7 @@
   
   #define which otus are in both tables
   otus_keep <- intersect(colnames(otu_table),rownames(trait_table))
+
   #make sure otus_keep > 0
   if(length(otus_keep)==0){
     stop("Error: no OTU overlap between OTU table and trait table.")

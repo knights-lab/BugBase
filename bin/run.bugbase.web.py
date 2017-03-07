@@ -71,7 +71,7 @@ def make_option_parser():
 		default=None,
 		type='string',
 		help="name of column that lists treatment groups")
-	parser.add_option("-P","--phenotypes",
+	parser.add_option("-p","--phenotypes",
 		default=None,
 		type='string',
 		help="specific phenotypes to predict, comma separated list, no spaces")

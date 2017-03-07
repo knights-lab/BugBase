@@ -265,7 +265,7 @@ if(isTRUE(opts$wgs)){
 
 if(isTRUE(opts$predict)){
   print("BugBase analysis complete")
-} else{
+} else {
   print("Plotting thresholds...")
   #Plot thresholds
   #Two options - one with no mapping file, one with mapping file
