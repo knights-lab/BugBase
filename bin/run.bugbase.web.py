@@ -252,7 +252,7 @@ if __name__ == '__main__':
 	
 	# If threshold is user-specified, state what will be used
 	if options.threshold is not None:
-		print "[ERROR_MESSAGE]A user-specified threshold of %s will be used for all traits" %(options.threshold)
+		print "A user-specified threshold of %s will be used for all traits" %(options.threshold)
 
 	# If kegg is specified, check that modules are valid
 	if options.kegg is True:
