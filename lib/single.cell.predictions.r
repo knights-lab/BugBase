@@ -122,14 +122,23 @@
   #final_prediction is samples x traits
   final_prediction <- matrix(0, nsamples, ntraits)
   
-  #use the max variance as the threshold for each trait
-  which.threshold <- apply(variances, 1, which.max)
-  which.threshold[which.threshold == 1] <- 2
-  #create a matrix of traits and thresholds used
-  trait_thresholds <- matrix(0, ntraits, 1)
-  rownames(trait_thresholds) <- rownames(variances)
-  trait_thresholds[,1] <- as.numeric(thresholds[which.threshold])
-  colnames(trait_thresholds) <- "Threshold"
+  if(is.null(threshold_set)){
+    #use the max variance as the threshold for each trait
+    which.threshold <- apply(variances, 1, which.max)
+    which.threshold[which.threshold == 1] <- 2
+    #create a matrix of traits and thresholds used
+    trait_thresholds <- matrix(0, ntraits, 1)
+    rownames(trait_thresholds) <- rownames(variances)
+    trait_thresholds[,1] <- as.numeric(thresholds[which.threshold])
+    colnames(trait_thresholds) <- "Threshold"
+    print(trait_thresholds)
+  } else {
+    trait_thresholds <- matrix(0, ntraits, 1)
+    rownames(trait_thresholds) <- rownames(variances)
+    trait_thresholds[,1] <- as.numeric(threshold_set)
+    colnames(trait_thresholds) <- "Threshold"
+    print(trait_thresholds)
+  }
   
   #create a matrix of otus by traits (boolean) using the thresholds used for
   # each trait
@@ -152,7 +161,11 @@
   #fill in the final prediction table
   #this is samples x traits
   for(i in 1:ntraits){
-    final_prediction[,i] <- prediction[,i,which.threshold[i]]
+    if(is.null(threshold_set)){
+      final_prediction[,i] <- prediction[,i,which.threshold[i]]
+    } else {
+      final_prediction[,i] <- prediction[,i,1]
+    }
   }
   
   rownames(final_prediction) <- rownames(otu_table)
