@@ -26,14 +26,14 @@
 # -a 	Plot all samples (no stats will be run)
 options(warn = -1)
 
-library(optparse)
-library(reshape2) 
-library(plyr)
-library(RColorBrewer)
-library(gridExtra)
-library(ggplot2)
-library(beeswarm)
-library(biom)
+# library(optparse)
+# library(reshape2) 
+# library(plyr)
+# library(RColorBrewer)
+# library(gridExtra)
+# library(ggplot2)
+# library(beeswarm)
+# library(biom)
 
 #Set BugBase path
 my_env <- Sys.getenv(c('BUGBASE_PATH'))
