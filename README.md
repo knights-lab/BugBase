@@ -60,11 +60,11 @@ BugBase has one main command, `run.bugbase.r`, that will:
 BugBase's `run.bugbase.r` parameters:
 ```
 Required
-	-i	Input OTU table, picked against the Greengenes database (16S) or IMG (WGS) (.txt or .biom (json))
+	-i	Input OTU table, picked against the Greengenes database (16S) or IMG (Shotgun) (.txt or .biom (json))
 	-o	Output directory name
 	
 Optional
-	-w	Data is whole genome shotgun data (picked against IMG database)
+	-w	Data is shotgun metagenomic data (picked against IMG database)
 	-a 	Plot all samples (no stats will be run)
 	-x	Output prediction files only, no plots will be made
 	-m	Mapping file (tab-delimited text file)
@@ -88,10 +88,10 @@ BugBase takes in QIIME compatible OTU tables in the classic (.txt) or json versi
 - Do not include taxonomy if in the classic form (.txt)
 - Counts, not relative abundance
 
-WGS data:
+Shotgun data:
 - Closed reference OTU picking with the IMG reference sequences
 
-To generate a BugBase compatible OTU table from WGS data, please follow the steps below:
+To generate a BugBase compatible OTU table from shotgun data, please follow the steps below:
 
 1. Download the UTree release specific to your operating system by following the first step [here.](https://github.com/knights-lab/UTree "UTree") Stop when you have reached "Compilation", as that step and those following it are not needed for OTU picking purposes.
 2. Install NINJA-SHOGUN by following the instruction [here.](https://github.com/knights-lab/NINJA-SHOGUN "SHOGUN") Only complete the initial steps.  Stop when you have reached "Building a Database", as that step and those following it are not needed for OTU picking purposes.
@@ -126,7 +126,7 @@ Required
 	-i     path to directory housing the files that list the KO IDs per trait
 	
 Optional
-	-w	traits are for whole genome sequencing, default is 16S
+	-w	traits are for shotgun metagenomic sequencing, default is 16S
 ```
 
 To create a custom BugBase input and run the BugBase predictions:
