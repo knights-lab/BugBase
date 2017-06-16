@@ -57,29 +57,27 @@ BugBase has one main command, `run.bugbase.r`, that will:
 -	Statistically analyze the microbiome phenotype proportions according the treatment groups specified, or by using regression for continuous data
 -	Plot OTU contributions for each phenotype
 
-
-<dl>
-	<dt>Required</dt>
-	<dd> -i     input OTU table, picked against the Greengenes database (16S) or IMG (WGS) (.txt or .biom (json))
-	<dd> -o     output directory name
+BugBase's `run.bugbase.r` parameters:
+```
+Required
+	-i	Input OTU table, picked against the Greengenes database (16S) or IMG (WGS) (.txt or .biom (json))
+	-o	Output directory name
 	
-	<dt>Optional</dt>
-	<dd> -w	 	Data is whole genome shotgun data (picked against IMG database)
-	<dd> -a 	Plot all samples (no stats will be run)
-	<dd> -x		Output prediction files only, no plots will be made
-	<dd> -m     mapping file (tab-delimited text file)
-	<dd> -c     map column header to plot by (which column denotes treatment groups)
-	<dd> -g 	Specify subset of groups in map column to plot (list, comma separated)
-	<dd> -z 	Data is of type continuous 
-	<dd> -C 	Use covariance instead of variance to determine thresholds
-	<dd> -t	 	Taxa level to plot OTU contributions by (number 1-7)
-	<dd> -T 	Specify a threshold to use for all traits (number 0-1)
-	<dd> -k 	Use the KEGG modules instead of default traits (Note: you must specify which modules!)
-	<dd> -p 	List modules or traits to predict (comma separated list, no spaces)
-	<dd> -u	 	Use a user-define trait table. Absolute file path must be specified
-
-	
-</dl>
+Optional
+	-w	Data is whole genome shotgun data (picked against IMG database)
+	-a 	Plot all samples (no stats will be run)
+	-x	Output prediction files only, no plots will be made
+	-m	Mapping file (tab-delimited text file)
+	-c	Map column header to plot by (which column denotes treatment groups)
+	-g 	Specify subset of groups in map column to plot (list, comma separated)
+	-z 	Data is of type continuous 
+	-C 	Use covariance instead of variance to determine thresholds
+	-t	Taxa level to plot OTU contributions by (number 1-7)
+	-T 	Specify a threshold to use for all traits (number 0-1)
+	-k 	Use the KEGG modules instead of default traits (Note: you must specify which modules!)
+	-p 	List modules or traits to predict (comma separated list, no spaces)
+	-u	Use a user-define trait table. Absolute file path must be specified
+```
 
 ### BugBase compatible OTU tables
 
@@ -122,23 +120,24 @@ You can create your user-defined custom BugBase input table using `make.user.tab
 - merge all intermediate tables into one table that has each trait of interest as a column
 - create a final BugBase input file will be called "Custom_BugBase_Traits.txt" and it will be located in directory you specified as the input
 
-<dl>
-	<dt>Required</dt>
-	<dd> -i     path to directory housing the files that list the KO IDs per trait
+BugBase parameters for `make.user.table.r`:
+```
+Required
+	-i     path to directory housing the files that list the KO IDs per trait
 	
-	<dt>Optional</dt>
-	<dd> -w	 	traits are for whole genome sequencing, default is 16S
-</dl>
+Optional
+	-w	traits are for whole genome sequencing, default is 16S
+```
 
 To create a custom BugBase input and run the BugBase predictions:
 
 ```
+#Example:
+
 make.user.table.r -i directory_with_trait_files
 
 run.bugbase.r -i path/to/OTU_Table.biom -m path/to/map.txt -c metadata_column -u directory_with_trait_files/Custom_BugBase_Traits.txt -o output_name
 
 ```
-
-
 
 =======
