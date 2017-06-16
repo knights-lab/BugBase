@@ -1,0 +1,19 @@
+getopt 1.20.0
+=============
+* Type of "numeric" in spec automatically cast to "double".  
+  Previously users might have had an error passing negative numbers if they
+  accidentally specified "numeric" instead of "double".
+* Project website moved to https://github.com/trevorld/getopt
+* Exports new function ``sort_list``.
+
+getopt 1.19.1
+=============
+* If a passed in option matches multiple options in the getopt specification but matches one exactly
+  then `getopt` now uses that value instead of throwing a "long flag is ambiguous" error.
+
+getopt 1.19.0
+=============
+* Exports new function `get_Rscript_filename` that returns name of calling script,
+  `getopt` now uses this function value as default for `command` argument
+* Documentation improved and now highlights differences 
+  between `getopt` and `optparse` packages for new undecided users

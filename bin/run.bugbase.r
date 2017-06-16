@@ -41,6 +41,22 @@ if(my_env == ""){
   stop("BUGBASE_PATH not set.")
 }
 
+#Set R package paths - This is to over come the lack of biom now available
+lib_location <- paste(my_env, "/R_lib", sep='/')
+
+# Load packages
+library(optparse, lib.loc = lib_location)
+library(reshape2, lib.loc = lib_location) 
+library(plyr, lib.loc = lib_location)
+library(RColorBrewer, lib.loc = lib_location)
+library(gridExtra, lib.loc = lib_location)
+library(ggplot2, lib.loc = lib_location)
+library(beeswarm, lib.loc = lib_location)
+library(biom, lib.loc = lib_location)
+library(labeling, lib.loc = lib_location)
+library(digest, lib.loc = lib_location)
+library(methods)
+
 #Find functions in the lib
 lib_dir <- paste(my_env, "/lib", sep='/')
 r_funcs <- list.files(lib_dir)

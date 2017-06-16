@@ -1,0 +1,43 @@
+useDynLib("colorspace")
+
+import("methods")
+importFrom("graphics", "plot")
+
+exportClasses("color", "RGB", "sRGB", "HSV", "HLS", "XYZ", "LAB", "polarLAB", "LUV", "polarLUV")
+
+export(
+  ## colorspaces
+  "RGB",
+  "sRGB",
+  "HSV",
+  "HLS",
+  "XYZ",
+  "LAB",
+  "polarLAB",
+  "LUV",
+  "polarLUV",
+
+  ## utilities
+  "mixcolor",
+  "coords",
+  
+  "hex",
+  "hex2RGB",
+  "readRGB",
+  "readhex",
+  "writehex",
+
+  ## palettes
+  "rainbow_hcl",
+  "diverge_hcl",
+  "diverge_hsv",
+  "heat_hcl",
+  "sequential_hcl",
+  "terrain_hcl",
+
+  ## palette utilities
+  "choose_palette",
+  "desaturate"
+)
+
+exportMethods("[", "coerce", "coords", "plot", "show")
