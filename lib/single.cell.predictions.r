@@ -131,13 +131,11 @@
     rownames(trait_thresholds) <- rownames(variances)
     trait_thresholds[,1] <- as.numeric(thresholds[which.threshold])
     colnames(trait_thresholds) <- "Threshold"
-    print(trait_thresholds)
   } else {
     trait_thresholds <- matrix(0, ntraits, 1)
     rownames(trait_thresholds) <- rownames(variances)
     trait_thresholds[,1] <- as.numeric(threshold_set)
     colnames(trait_thresholds) <- "Threshold"
-    print(trait_thresholds)
   }
   
   #create a matrix of otus by traits (boolean) using the thresholds used for
