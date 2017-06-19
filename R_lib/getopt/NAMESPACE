@@ -1,3 +1,0 @@
-export(get_Rscript_filename)
-export(getopt)
-export(sort_list)
