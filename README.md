@@ -5,7 +5,7 @@ Standard users can analyze their microbiome samples with the default phenotypes,
 
 ### Dependencies
 
-BugBase relies R-packages. When you are ready to try BugBase, the following R packages will be looked for on your computer, and installed for you if they are missing.
+BugBase relies on R packages. When you are ready to try BugBase, the following R packages will be looked for on your computer, and installed for you if they are missing.
 
 * optparse
 * beeswarm
