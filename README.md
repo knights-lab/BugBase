@@ -32,7 +32,7 @@ export PATH=$PATH:$BUGBASE_PATH/bin
 
 Note: you will need change the paths to match your system and which directory you have downloaded BugBase into. You might need to put it in ~/.bashrc instead of ~/.bash_profile depending on your system. After adding these paths to the .bash_profile or ~/.bashrc, reopen the terminal or login again.
 
-To check your install, type the following in the command line.  It should print the options available to run BugBase.
+To check your install, type the following in the command line.  It will first install any missing packages, and then it will print the options available to run BugBase.
 
 ```
 run.bugbase.r -h 
