@@ -5,11 +5,8 @@ Standard users can analyze their microbiome samples with the default phenotypes,
 
 ### Dependencies
 
-Follow the website directions to install:
-* R (http://cran.r-project.org)
+BugBase relies R-packages. When you are ready to try BugBase, the following R packages will be looked for on your computer, and installed for you if they are missing.
 
-These R packages can be installed with this command in R: `install.packages(‘package’)`
-* ape
 * optparse
 * beeswarm
 * RColorBrewer
@@ -18,7 +15,11 @@ These R packages can be installed with this command in R: `install.packages(‘p
 * grid
 * gridExtra
 * ggplot2
+* RJSONIO
 * biom
+* Matrix
+* labeling
+* digest
 
 ### Installation
 #### Mac OS
