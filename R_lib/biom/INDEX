@@ -1,0 +1,27 @@
+biom                    Build and return an instance of the biom-class.
+biom-class              The biom format data class.
+biom-package            This is an R package for interfacing with the
+                        biom format.
+biom_data               Access main data observation matrix data from
+                        'biom-class'.
+biom_shape              The matrix dimensions of a 'biom-class' object.
+colnames                Method extensions to 'colnames' for
+                        'biom-class' objects.
+header                  Extract the header from a 'biom-class' object
+                        as a list.
+matrix_element_type     Access class of data in the matrix elements of
+                        a 'biom-class' object
+ncol                    Method extensions to 'ncol' for 'biom-class'
+                        objects.
+nrow                    Method extensions to 'nrow' for 'biom-class'
+                        objects.
+observation_metadata    Access observation (row) meta data from
+                        'biom-class'.
+read_biom               Read a biom-format file, returning a
+                        'biom-class'.
+rownames                Method extensions to 'rownames' for
+                        'biom-class' objects.
+sample_metadata         Access meta data from 'biom-class'.
+show                    Method extensions to show for biom objects.
+write_biom              Write a biom-format file, returning a
+                        'biom-class'.
