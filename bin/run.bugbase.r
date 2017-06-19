@@ -26,27 +26,28 @@
 # -a 	Plot all samples (no stats will be run)
 options(warn = -1)
 
-package_list <- c("optparse", 
-  "reshape2", 
-  "plyr", 
-  "RColorBrewer", 
-  "gridExtra", 
-  "ggplot2", 
-  "beeswarm")
+# package_list <- c("optparse", 
+#   "reshape2", 
+#   "plyr", 
+#   "RColorBrewer", 
+#   "gridExtra", 
+#   "ggplot2", 
+#   "beeswarm")
 
-for(i in 1:length(package_list)){
-  if(!require(package_list[i])){
-    install.packages(package_list[i], dependancies =T)
-    library(package_list[i])
-}
-#library(optparse)
-# library(reshape2) 
-# library(plyr)
-# library(RColorBrewer)
-# library(gridExtra)
-# library(ggplot2)
-# library(beeswarm)
-# library(biom)
+# for(i in 1:length(package_list)){
+#   if(!require(package_list[i])){
+#     install.packages(package_list[i], dependancies =T)
+#     library(package_list[i])
+# }
+
+library(optparse)
+library(reshape2) 
+library(plyr)
+library(RColorBrewer)
+library(gridExtra)
+library(ggplot2)
+library(beeswarm)
+library(biom)
 
 #Set BugBase path
 my_env <- Sys.getenv(c('BUGBASE_PATH'))
@@ -55,7 +56,7 @@ if(my_env == ""){
 }
 
 #Set R package paths - This is to over come the lack of biom now available
-lib_location <- paste(my_env, "/R_lib", sep='/')
+#lib_location <- paste(my_env, "/R_lib", sep='/')
 
 # Load packages
 #library(optparse, lib.loc = lib_location)
@@ -65,7 +66,7 @@ lib_location <- paste(my_env, "/R_lib", sep='/')
 #library(gridExtra, lib.loc = lib_location)
 #library(ggplot2, lib.loc = lib_location)
 #library(beeswarm, lib.loc = lib_location)
-library(biom, lib.loc = lib_location)
+#library(biom, lib.loc = lib_location)
 #library(labeling, lib.loc = lib_location)
 #library(digest, lib.loc = lib_location)
 #library(methods)
