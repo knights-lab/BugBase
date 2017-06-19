@@ -52,16 +52,19 @@ package_list <- c("optparse",
   "beeswarm", 
    "plyr",
    "RJSONIO",
-   "Matrix")
-
-for(i in 1:length(package_list)){
-  if(!require(package_list[i])){
-    install.packages(package_list[i], dependancies =T)
-    library(package_list[i])
-}
+   "Matrix",
+   "labeling",
+   "digest")
 
 #Set R package paths - This is to over come the lack of biom now available
 lib_location <- paste(my_env, "/R_lib", sep='/')
+
+for(p in package_list){
+  if(!require(p, character.only = TRUE, lib.loc=lib_location)){
+    install.packages(p, lib=lib_location, repos="http://cran.r-project.org")
+    library(p, character.only = TRUE, lib.loc=lib_location)
+  }
+}
 
 # Load biom package
 library(biom, lib.loc = lib_location)
