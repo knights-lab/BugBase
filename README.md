@@ -79,7 +79,7 @@ Optional
 	-k 	Use the KEGG modules instead of default traits (Note: you must specify which modules!)
 	-p 	List modules or traits to predict (comma separated list, no spaces)
 	-u	Use a user-define trait table. Absolute file path must be specified
-	-l  Center log transform the data instead of using relative abundance
+	-l 	Center log transform the data instead of using relative abundance
 ```
 
 ### BugBase compatible OTU tables
