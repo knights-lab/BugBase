@@ -22,7 +22,8 @@
 # -u  Use a user-define trait table. Absolute file path must be specified
 # -k  Use the kegg pathways instead of default traits
 # -z 	Data is of type continuous 
-# -C 	Use covariance instead of variance to determine thresholds
+# -C 	Use coefficient of variance instead of variance to determine thresholds
+# -l  Center log transform the data instead of using relative abundance
 # -a 	Plot all samples (no stats will be run)
 # -x  Predict only. Not plots will be made, just results table
 options(warn = -1)
