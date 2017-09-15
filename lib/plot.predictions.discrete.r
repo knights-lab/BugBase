@@ -3,8 +3,11 @@
 # Required: prediction table, mapping file, map column, output filepath
 # Returns: pdfs of plots and text files of statistics
 
-"plot.predictions.discrete" <- function(predictions, map, map_column,
-										output_fp=NULL){
+"plot.predictions.discrete" <- function(predictions, 
+											map, 
+											map_column,
+											clr_trans,
+											output_fp=NULL){
 
 	#set directory
 	dir <- paste(output, "predicted_phenotypes", sep="/")
@@ -162,7 +165,11 @@
 					cex.lab=1, 
 					las=2)
 	bxplot(predictions[,trait] ~ map[,map_column], add=TRUE)
-	mtext("Relative Abundance", 2, 3)
+	if(is.null(clr_trans)){
+		mtext("Relative Abundance", 2, 3)
+	} else {
+		mtext("CLR Transformed Relative Abundance", 2, 3)
+	}
 	dev.off()
 	}
 }

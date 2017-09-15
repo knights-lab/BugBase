@@ -3,7 +3,9 @@
 # Inputs: prediction array, output filepath
 # Returns: pdfs of plots
 
-"plot.thresholds.all" <- function(prediction_array, output_fp=NULL){
+"plot.thresholds.all" <- function(prediction_array, 
+									clr_trans, 
+									output_fp=NULL){
 
 	#set directory
 	dir <- paste(output, "thresholds", sep="/")
@@ -36,6 +38,7 @@
 		par(mar=c(6,4,0.5,6), oma=c(0.1,0.1,0.1,0.1), mgp=c(1.5,0.5,0))
 
 		# Plot the mean relative abundance at each threshold
+
 		plot(thresholds, means, 
 				type="n", 
 				cex.axis=1, 
@@ -44,7 +47,11 @@
 				ylab='', 
 				cex=1)
 		lines(thresholds, means, col=cols[1], lwd=2)
-		mtext("Relative Abundance", 2, 3)
+		if(is.null(clr_trans)){
+			mtext("Relative Abundance", 2, 3)
+		} else {
+			mtext("CLR Transformed Relative Abundance", 2, 3)
+		}
 		mtext("Threshold (% of category covered)", 1, 3)    
 		dev.off()
 	}

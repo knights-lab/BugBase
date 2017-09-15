@@ -4,7 +4,9 @@
 #   (no comparisons made).
 
 
-"plot.predictions.all" <- function(predictions, output_fp=NULL){
+"plot.predictions.all" <- function(predictions, 
+									clr_trans,
+									output_fp=NULL){
 
 	#set directory
 	dir <- paste(output, "predicted_phenotypes", sep="/")
@@ -57,7 +59,11 @@
 					cex.lab=1, 
 					las=2)
 		bxplot(predictions[,trait], add=TRUE)
-		mtext("Relative Abundance", 2, 3)
+		if(is.null(clr_trans)){
+			mtext("Relative Abundance", 2, 3)
+		} else {
+			mtext("CLR Transformed Relative Abundance", 2, 3)
+		}
 		dev.off()
 	}
 	

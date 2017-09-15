@@ -14,7 +14,7 @@
 #						-o output_directory_name 
 
 # Options
-# -w 	Data is whole genome shotgun data (picked against IMG database) 
+# -w 	Data is metagenomic shotgun data (picked against RefSeq database) 
 # -t 	Specify which taxa level to plot otu contributions by (number 1-7) 
 # -p 	Specify list of traits (phenotypes) to test (list, comma separated)
 # -T 	Specify a threshold to use for all traits (number 0-1)
@@ -24,6 +24,7 @@
 # -z 	Data is of type continuous 
 # -C 	Use covariance instead of variance to determine thresholds
 # -a 	Plot all samples (no stats will be run)
+# -x  Predict only. Not plots will be made, just results table
 options(warn = -1)
 
 #Set BugBase path
@@ -41,6 +42,7 @@ if(my_env == ""){
 # library(ggplot2)
 # library(beeswarm)
 # library(biom)
+# library(robCompositions)
 
 #See if these packages exist on comp, if not, install.
 package_list <- c("optparse", 
@@ -54,20 +56,27 @@ package_list <- c("optparse",
    "RJSONIO",
    "Matrix",
    "labeling",
-   "digest")
+   "digest",
+   "robCompositions")
 
 #Set R package paths - This is to over come the lack of biom now available
 lib_location <- paste(my_env, "/R_lib", sep='/')
 
 for(p in package_list){
-  if(!require(p, character.only = TRUE, lib.loc=lib_location)){
+  if(!suppressWarnings(suppressMessages(require(p, character.only = TRUE, 
+      lib.loc=lib_location, 
+      quietly = TRUE, 
+      warn.conflicts = FALSE)))){
     install.packages(p, lib=lib_location, repos="http://cran.r-project.org")
-    library(p, character.only = TRUE, lib.loc=lib_location)
+    suppressWarnings(suppressMessages(library(p, character.only = TRUE, 
+      lib.loc=lib_location, 
+      quietly = TRUE, 
+      warn.conflicts = FALSE)))
   }
 }
 
 # Load biom package
-library(biom, lib.loc = lib_location)
+library(biom, lib.loc = lib_location, quietly = TRUE, warn.conflicts = FALSE)
 
 #Find functions in the lib
 lib_dir <- paste(my_env, "/lib", sep='/')
@@ -110,26 +119,29 @@ option_list <- list(
   make_option(c("-k", "--kegg"), action="store_true", default=FALSE,
               help="use kegg pathway table [default %default]"),
   make_option(c("-C", "--cov"), action="store_true", default=FALSE,
-              help="use covariance instead of variance [default %default]"),
+              help="use coefficient of variance instead of variance [default %default]"),
+  make_option(c("-l", "--clr_trans"), action="store_true", default=FALSE,
+              help="use center log transformation instead of relative abundance [default %default]"),
   make_option(c("-a", "--all"), action="store_true", default=FALSE,
               help="plot all samples without a mapping file (this outputs no 
               statistics) [default %default]"),
-  make_option(c("-w", "--wgs"), action="store_true", default=FALSE,
-              help="Data is whole genome shotgun data 
-              (picked against IMG database) [default %default]")
+  make_option(c("-w", "--shotgun"), action="store_true", default=FALSE,
+              help="Data is metagenomic shotgun data 
+              (picked against RefSeq database) [default %default]")
   )
 opts <- parse_args(OptionParser(option_list=option_list))
 
 #Define the database files
 db_fp <- paste(my_env, "/usr", sep='/')
 
-#Check for WGS and KEGG
-if(isTRUE(opts$wgs)){
+#Check for shotgun and KEGG
+if(isTRUE(opts$shotgun)){
   copy_no_file <- paste(db_fp, "16S_13_5_precalculated.txt.gz", sep='/')
-  taxonomy <- paste(db_fp, "img_otu_taxonomy.txt.gz", sep='/')
+  taxonomy <- paste(db_fp, "shotgun_taxonomy.txt.gz", sep='/')
   if(isTRUE(opts$kegg)){
-    trait_table <- paste(db_fp, 
-      "kegg_modules_img_precalculated.txt.gz", sep='/')
+    trait_table <- paste(db_fp,
+      "kegg_module_shotgun.txt.gz", sep='/')
+      #"kegg_modules_img_precalculated.txt.gz", sep='/')
     if(!isTRUE(opts$predict)){
       if(is.null(opts$phenotype)){
       stop("A list of modules must be specified when using KEGG")
@@ -238,6 +250,12 @@ if(! isTRUE(use_cov)){
   use_cov <- NULL
 }
 
+#Define RA or CLR transform
+clr_trans <- opts$clr_trans
+if(! isTRUE(clr_trans)){
+  clr_trans <- NULL
+}
+
 #Make output directories
 output <- opts$output
 if(output != "."){
@@ -260,8 +278,8 @@ print("Loading Inputs...")
 #Options: map, map column,groups
 loaded.inputs <- load.inputs(otu_table, map, mapcolumn, groups)
 
-if(isTRUE(opts$wgs)){
-  print("WGS specified, no copy number normalization will take place...")
+if(isTRUE(opts$shotgun)){
+  print("Shotgun specified, no copy number normalization will take place...")
 } else {
   print("16S copy number normalizing OTU table...")
   #16S copy normalize otu table
@@ -270,22 +288,28 @@ if(isTRUE(opts$wgs)){
     loaded.inputs$otu_table, output)
 }
 
+if(isTRUE(clr_trans)){
+  print("Center log transforming OTU table...")
+}
+
 print("Predicting phenotypes...")
 #Make predictions
 #Required:trait table,  normalized otu table
 #Options: single trait, threshold, use cov
-if(isTRUE(opts$wgs)){
+if(isTRUE(opts$shotgun)){
   prediction_outputs <- single.cell.predictions(trait_table, 
                                                 loaded.inputs$otu_table, 
                                                 test_trait,
                                                 threshold_set,
-                                                use_cov)
+                                                use_cov, 
+                                                clr_trans)
 } else {
   prediction_outputs <- single.cell.predictions(trait_table, 
                                                 normalized_otus, 
                                                 test_trait,
                                                 threshold_set,
-                                                use_cov)
+                                                use_cov,
+                                                clr_trans)
 }
 
 if(isTRUE(opts$predict)){
@@ -296,13 +320,14 @@ if(isTRUE(opts$predict)){
   #Two options - one with no mapping file, one with mapping file
   if(is.null(threshold_set)){
     if(isTRUE(opts$all)){
-      #Required: predictions
-      plot.thresholds.all(prediction_outputs$predictions)
+      #Required: predictions, clr_trans
+      plot.thresholds.all(prediction_outputs$predictions,clr_trans)
     } else {
-      #Required: predictions, map and map column
+      #Required: predictions, map and map column, clr_trans
       plot.thresholds(prediction_outputs$predictions, 
                     loaded.inputs$map, 
-                    loaded.inputs$map_column)
+                    loaded.inputs$map_column,
+                    clr_trans)
     }
   }
 
@@ -312,26 +337,28 @@ if(isTRUE(opts$predict)){
   #   one with a mapping file, continous
   #   one with a mapping file, discrete
   if(isTRUE(opts$all)){
-    #Required: predictions
-    plot.predictions.all(prediction_outputs$final_predictions)
+    #Required: predictions, clr_trans
+    plot.predictions.all(prediction_outputs$final_predictions, clr_trans)
   } else {
     if(isTRUE(opts$continuous)){
-      #Required: predictions, map, map column
+      #Required: predictions, map, map column, clr_trans
       plot.predictions.continuous(prediction_outputs$final_predictions, 
                                   loaded.inputs$map, 
-                                  loaded.inputs$map_column)
+                                  loaded.inputs$map_column,
+                                  clr_trans)
     } else {
-      #Required: predictions, map, map column
+      #Required: predictions, map, map column, clr_trans
       plot.predictions.discrete(prediction_outputs$final_predictions, 
                                 loaded.inputs$map, 
-                                loaded.inputs$map_column)
+                                loaded.inputs$map_column,
+                                clr_trans)
     }
   }
 
   print("Plotting OTU contributions...")
   #Plot otu contributions (taxa summaries)
   #Two options, with a mapping file or without
-  if(isTRUE(opts$wgs)){
+  if(isTRUE(opts$shotgun)){
     if(isTRUE(opts$all)){
       #Required: otu contributions, normalized otu table, taxonomy
       otu.contributions.all.r(prediction_outputs$otus_contributing,

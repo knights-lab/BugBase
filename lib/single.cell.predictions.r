@@ -10,9 +10,10 @@
 
 "single.cell.predictions" <- function(trait_table_fp, 
                                       otu_table_fp,
-                                      test_trait=NULL, 
-                                      threshold_set=NULL,
-                                      use_cov=NULL,
+                                      test_trait, 
+                                      threshold_set,
+                                      use_cov,
+                                      clr_trans,
                                       thresholds=c(seq(0, 0.01, 0.001), 
                                                    seq(0.02, 0.1, 0.01), 
                                                    seq(0.2, 1.0, 0.1))){
@@ -23,7 +24,8 @@
                                       sep='\t', 
                                       head=TRUE, 
                                       row=1, 
-                                      check=F))
+                                      check=F,
+                                      quote=""))
   
   if(!is.null(threshold_set)){
     if(! 0 < threshold_set && threshold_set <= 1){
@@ -61,13 +63,26 @@
   #comment='', 
   #skip=1))
   otu_table <- otu_table_fp
+
+  if(is.null(clr_trans)){
+    #convert to samples as rows
+    otu_table <- t(otu_table)
   
-  #otu_table is samples x otus
-  otu_table <- t(otu_table)
-  
-  #relative abundance conversion of otu table
-  otu_table <- sweep(otu_table, 1, rowSums(otu_table), FUN='/')
-  
+    #relative abundance conversion of otu table
+    otu_table <- sweep(otu_table, 1, rowSums(otu_table), FUN='/')
+  } else {
+    #Convert any 0 to 0.65 to allow for CLR transform
+    #Ref: Palarea-Albaladejo J, et al. 2014. JOURNAL OF CHEMOMETRICS. A bootstrap estimation scheme for chemical compositional data with nondetects. 28;7:585–599.
+    otu_table[otu_table == 0] <- 0.65
+    
+    #Centered log-ratio transform for compositions
+    #Ref: 
+
+    #convert to samples as rows
+    otu_table <- t(otu_table)
+    otu_table <- cenLR(otu_table)$x.clr   # Centered log-ratio transform for compositions 
+  }
+
   #define which otus are in both tables
   otus_keep <- intersect(colnames(otu_table),rownames(trait_table))
 
@@ -76,6 +91,8 @@
     stop("Error: no OTU overlap between OTU table and trait table.")
   }
   
+  print(paste(length(otus_keep), "OTUs from the input table matched the", nrow(trait_table), "available database OTUs"))
+
   #subset pathway table and otu table to include only otus within the 
   # otu table
   otu_table <- otu_table[,otus_keep,drop=F]
@@ -107,10 +124,11 @@
   dimnames(prediction)[[1]] <- rownames(otu_table)
   dimnames(prediction)[[2]] <- colnames(trait_table)
   dimnames(prediction)[[3]] <- thresholds
-  
+
   #make variance table showing the variance in trait abundance
   #variances is trait x threshold
-  if(!is.null(use_cov)){
+
+  if(is.null(use_cov)){
     variances <- apply(prediction, c(2,3), function(xx) sd(xx)/mean(xx))
   } else {
     variances <- apply(prediction, c(2,3), var)

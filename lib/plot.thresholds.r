@@ -3,7 +3,10 @@
 # Inputs: prediction array, mapping file, map column, output filepath
 # Returns: pdfs of plots
 
-"plot.thresholds" <- function(prediction_array, map, map_column, 
+"plot.thresholds" <- function(prediction_array, 
+								map, 
+								map_column, 
+								clr_trans,
 								output_fp=NULL){
 
 	#set directory
@@ -36,25 +39,43 @@
 		par(mar=c(6,4,0.5,6), oma=c(0.1,0.1,0.1,0.1), mgp=c(1.5,0.5,0))
 				
 		# Plot the mean relative abundance for each threshold
-		plot(thresholds, thresholds, 
+		if(is.null(clr_trans)){
+			yvars <- thresholds
+			plot(thresholds, yvars, 
 				type="n", 
 				cex.axis=1, 
 				pch=16, 
 				xlab='', 
 				ylab='', 
 				cex=1)
+			yrange <- abs(max(yvars)-min(yvars))
+		} else {
+			yvars <- seq(min(prediction_array[,trait,]), max(prediction_array[,trait,]), by = abs((max(prediction_array[,trait,]) - min(prediction_array[,trait,]))/(length(thresholds)-1)))
+			plot(thresholds, yvars, 
+				type="n", 
+				cex.axis=1, 
+				pch=16, 
+				xlab='', 
+				ylab='', 
+				cex=1)
+			yrange <- abs(max(yvars)-min(yvars))
+		}
 		for(i in 1:length(groups)){
 			group <- groups[i]
 			means <- c()
-			ix <- map[,map_column]==group
+			ix <- map[,map_column] == group
 			for(n in 1:length(thresholds)){
 				means <- c(means,mean(prediction_array[ix,trait,n]))
 			}
 			lines(thresholds, means, col=cols[i], lwd=2)
-			legend(x=1.05, y=0.8+(0.04*i), group, cex=0.80, lty=1, lwd=2, 
+			legend(x=1.05, y=0.8+(yrange*0.05*i), group, cex=0.80, lty=1, lwd=2, 
 					col=cols[i], bty="n", xpd=TRUE)
-		mtext("Relative Abundance", 2, 3)
-		mtext("Threshold (% of category covered)", 1, 3)    
+			if(is.null(clr_trans)){
+				mtext("Relative Abundance", 2, 3)
+			} else {
+				mtext("CLR Transformed Relative Abundance", 2, 3)
+			}
+			mtext("Threshold (% of category covered)", 1, 3)    
 		}
 		dev.off()
 	}

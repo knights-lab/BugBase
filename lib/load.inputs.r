@@ -107,7 +107,16 @@
 
     #Drop any samples with no OTUs
     otu_table <- otu_table[,colSums(otu_table) > 1]
-    
+
+    #Change those less than 1/1 millionth of read depth to 0
+    otu_table[otu_table < sum(colSums(otu_table))/1000000] <- 0
+
+    #Change singletons to 0 (needed for low depth OTU tables)
+    otu_table[otu_table < 2] <- 0
+
+    #Filter the OTU table to keep OTUs in at least 5% of samples
+    otu_table <- otu_table[rowSums(otu_table > 0) > (0.05*ncol(otu_table)),]
+
     #get indices of which rows to keep
     ix.keep <- map[,map_column] %in% groups
     #keep only subset of samples belonging to requested groups
@@ -117,14 +126,15 @@
     intersect_btwn <- intersect(rownames(map),colnames(otu_table))
     new_map <- map[intersect_btwn,,drop=F]
     new_otu <- droplevels(as.data.frame(otu_table[,intersect_btwn]))
-    
+
     #print the groups to be tested
     # cat("\nThe number of samples in each group are:")
     # print(table(new_map[,map_column]))
     # map <- new_map
     # otu_table <- new_otu
   }
-  
+  rownames(new_otu) <- gsub("\ ", "_", rownames(new_otu))
+
   return(list(
     otu_table=new_otu,
     map=new_map,

@@ -74,6 +74,12 @@
 
 	taxa_list <- c()
 	
+	if(is.null(clr_trans)){
+		xlabel <- "Relative Abundance"
+	} else {
+		xlabel <- "CLR Transformed Relative Abundance"
+	}
+
 	#create taxa summaries
 	for(x in 1:length(traits)){
 		trait <- traits[x]
@@ -119,7 +125,7 @@
 		taxa_plot <- ggplot(taxa_collapsed, aes_string(x="SampleID",
 			y="Count", fill="Taxa")) + 
 			geom_bar(stat="identity", show_guide=FALSE) + 
-			labs(y = "Relative Abundance", x = "") +
+			labs(y = xlabel, x = "") +
 			theme_classic() +
 			theme(axis.text.x=element_blank(), axis.line.x = 
 				element_line(colour = 'black', size=0.5, linetype='solid'), 

@@ -3,7 +3,10 @@
 # Required: prediction table, mapping file, map column, output filepath
 # Returns: pdfs of plots and text files of statistics
 
-"plot.predictions.continuous" <- function(predictions, map, map_column, 
+"plot.predictions.continuous" <- function(predictions, 
+											map, 
+											map_column,
+											clr_trans, 
 											output_fp=NULL){
 	#set directory
 	dir <- paste(output, "predicted_phenotypes", sep="/")
@@ -93,7 +96,11 @@
 			cex=1, 
 			cex.lab=1)
 		abline(lm.out, lty=2)
-		mtext("Relative Abundance", 2, 3)
+		if(is.null(clr_trans)){
+			mtext("Relative Abundance", 2, 3)
+		} else {
+			mtext("CLR Transformed Relative Abundance", 2, 3)
+		}
 		mtext(map_column, 1, 3)
 		dev.off()
 	}
