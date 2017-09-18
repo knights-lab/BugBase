@@ -10,6 +10,7 @@
 	dir <- paste(output, "otu_contributions", sep="/")
 
 	contributing_name <- paste(dir, "contributing_otus.txt", sep='/')
+
 	write.table(otus_contributing, contributing_name, sep='\t', quote=F, 
 				col.names=NA)
 	
@@ -23,8 +24,10 @@
 	taxa_level <- as.numeric(taxa_level)
 
 	#read in gg_taxonomy table
+	print("here")
 	gg_taxonomy <- read.table(taxonomy, sep="\t", row.names=1, check=F, quote='')
   
+  	print("here2")
 	#keep only otus in the gg taxonomy table that are in the otu table
 	#these tables will be in the same otu order
 	#OTUs are now rows
@@ -162,7 +165,7 @@
 				linetype='solid'), axis.line.y = element_line(colour = 'black', 
 				size=0.5, linetype='solid')) + 
 			scale_fill_manual(values=cols2)
-			
+
 		#assign pdf name
 		file <- c(".pdf")
 		name <- paste(trait, ".pdf", sep='')

@@ -76,7 +76,7 @@
     otu_table[otu_table == 0] <- 0.65
     
     #Centered log-ratio transform for compositions
-    #Ref: Gloor GB, et al. 2016. ANNAL OF EPIDEMIOLOGY. It's all relative: analyzing microbiome data as compositions. 26;5:322-329.
+    #Ref: Gloor GB, et al. 2016. ANNALS OF EPIDEMIOLOGY. It's all relative: analyzing microbiome data as compositions. 26;5:322-329.
 
     #convert to samples as rows
     otu_table <- t(otu_table)

@@ -138,7 +138,7 @@ db_fp <- paste(my_env, "/usr", sep='/')
 #Check for shotgun and KEGG
 if(isTRUE(opts$shotgun)){
   copy_no_file <- paste(db_fp, "16S_13_5_precalculated.txt.gz", sep='/')
-  taxonomy <- paste(db_fp, "shotgun_taxonomy.txt.gz", sep='/')
+  taxonomy <- paste(db_fp, "img_otu_taxonomy.txt.gz", sep='/') # shotgun_taxonomy.txt.gz
   if(isTRUE(opts$kegg)){
     trait_table <- paste(db_fp,
       "kegg_module_shotgun.txt.gz", sep='/')

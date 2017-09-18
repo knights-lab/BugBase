@@ -24,6 +24,8 @@
 	#ensure same order of samples in map and traits
 	map <- map[rownames(predictions),,drop=F]
 	
+	map[,map_column] <- as.numeric(as.character(map[,map_column]))
+	
 	#define traits to test
 	traits<- colnames(predictions)
 
@@ -83,7 +85,7 @@
 		file <- c(".pdf")
 		name <- paste(trait, ".pdf", sep='')
 		name <- paste(dir, name, sep="/")
-	
+		
 		#now save the plot as a pdf h/w 6 inches
 		pdf(name, height=6,width=6);
 		par(mar=c(6,4,0.5,0.5), oma=c(0.1,0.1,0.1,0.1), mgp=c(1.5,0.5,0))

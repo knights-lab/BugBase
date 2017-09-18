@@ -40,7 +40,7 @@
 				
 		# Plot the mean relative abundance for each threshold
 		if(is.null(clr_trans)){
-			yvars <- thresholds
+			yvars <- as.numeric(thresholds)
 			plot(thresholds, yvars, 
 				type="n", 
 				cex.axis=1, 
