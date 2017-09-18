@@ -23,12 +23,11 @@
 	}
 	taxa_level <- as.numeric(taxa_level)
 
-	#read in gg_taxonomy table
-	print("here")
+	#read in taxonomy table - can be gg or shotgun
+
 	gg_taxonomy <- read.table(taxonomy, sep="\t", row.names=1, check=F, quote='')
   
-  	print("here2")
-	#keep only otus in the gg taxonomy table that are in the otu table
+	#keep only otus in the taxonomy table that are in the otu table
 	#these tables will be in the same otu order
 	#OTUs are now rows
 	otu_table <- t(otu_table)
@@ -125,7 +124,7 @@
 									summarize, Count = mean(Count))
 
 		colnames(group_collapsed_otus)[2] <- map_column
-		
+
 		#set value for cutoff (1/10 of the highest proportion)
 		max_abund <- max(group_collapsed_otus$Count)
 		cutoff_val <- max_abund / 10
@@ -148,6 +147,7 @@
  			group_collapsed_otus[,map_column] <- as.numeric(as.character(group_collapsed_otus[,map_column]))
  			group_collapsed_otus <- group_collapsed_otus[order(group_collapsed_otus[,map_column]),]
 			group_collapsed_otus[,map_column] <- as.character(group_collapsed_otus[,map_column])
+			group_collapsed_otus[,map_column] <- factor(group_collapsed_otus[,map_column], levels= unique(group_collapsed_otus[,map_column]))
  		} else{
  			group_collapsed_otus[,map_column] <- as.character(group_collapsed_otus[,map_column])
  			group_collapsed_otus <- group_collapsed_otus[order(group_collapsed_otus[,map_column]),]
