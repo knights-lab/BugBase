@@ -79,7 +79,7 @@ Optional
 	-k 	Use the KEGG modules instead of default traits (Note: you must specify which modules!)
 	-p 	List modules or traits to predict (comma separated list, no spaces)
 	-u	Use a user-define trait table. Absolute file path must be specified
-	-l 	Center log transform the data instead of using relative abundance
+	-l 	Centered log-ratio transform the data instead of using relative abundance
 ```
 
 ### BugBase compatible OTU tables
@@ -96,7 +96,7 @@ Shotgun data:
 
 To generate a BugBase compatible OTU table from shotgun data, please follow the steps below:
 
-1. Download the UTree release specific to your operating system by following the first step [here.](https://github.com/knights-lab/UTree "UTree") Stop when you have reached "Compilation", as that step and those following it are not needed for OTU picking purposes.
+1. Download the UTree release specific to your operating system by downloading and unzipping version 0.0.1 of [here.](https://github.com/knights-lab/UTree/releases/tag/v0.0.1 "UTree").
 2. Install NINJA-SHOGUN by following the instruction [here.](https://github.com/knights-lab/NINJA-SHOGUN "SHOGUN") Only complete the initial steps.  Stop when you have reached "Building a Database", as that step and those following it are not needed for OTU picking purposes.
 3. Download and unzip the SHOGUN-BugBase database (IMG reference sequences and maps) needed for OTU picking [here.](https://drive.google.com/open?id=0ByVmiknyDGaiM3M0dDBJMkZuZDg "shogun-bugbase-db")
 4. Run OTU picking with the following commands.  Update the `shogun_bugbase` command to be specific to the filepaths for your input sequences and the SHOGUN-BugBase database you downloaded.  Your input sequences should be in one directory, with one .fna file per sample. The name of each .fna file should be the name of the sample it corresponds to. Once OTU picking is complete, you will have an OTU table in classic format (.txt) called 'taxa_counts.txt' within the output directory specified.

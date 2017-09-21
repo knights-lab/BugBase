@@ -122,7 +122,7 @@ option_list <- list(
   make_option(c("-C", "--cov"), action="store_true", default=FALSE,
               help="use coefficient of variance instead of variance [default %default]"),
   make_option(c("-l", "--clr_trans"), action="store_true", default=FALSE,
-              help="use center log transformation instead of relative abundance [default %default]"),
+              help="use centered log-ratio transformation instead of relative abundance [default %default]"),
   make_option(c("-a", "--all"), action="store_true", default=FALSE,
               help="plot all samples without a mapping file (this outputs no 
               statistics) [default %default]"),
