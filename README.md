@@ -98,7 +98,8 @@ To generate a BugBase compatible OTU table from shotgun data, please follow the 
 
 1. Download the UTree release specific to your operating system by downloading and unzipping version 0.0.1 of UTree [here.](https://github.com/knights-lab/UTree/releases/tag/v0.0.1 "UTree")
 2. Install miniconda, if you don't already have it. Miniconda can be found [here.](https://conda.io/miniconda.html "miniconda")
-3. Download and unzip the SHOGUN-BugBase database (IMG reference sequences and maps) needed for OTU picking [here.](https://drive.google.com/open?id=0ByVmiknyDGaiM3M0dDBJMkZuZDg "shogun-bugbase-db")
+3. Download and unzip directory for the SHOGUN-BugBase database (IMG reference sequences and maps) needed for OTU picking [here.](https://drive.google.com/open?id=0ByVmiknyDGaiM3M0dDBJMkZuZDg "shogun-bugbase-db") 
+
 4. Finish installing SHOGUN for BugBase with the following commands:
 ```
 # create a shogun conda environment
@@ -109,6 +110,10 @@ source activate shogun
 
 # install shogun for BugBase
 pip install git+https://github.com/knights-lab/SHOGUN.git@v0.0.1 --no-cache-dir --upgrade
+
+pip install git+https://github.com/knights-lab/NINJA-utils
+
+pip install git+https://github.com/knights-lab/NINJA-dojo
 
 # deactivate the environment
 source deactivate
