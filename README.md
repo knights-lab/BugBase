@@ -91,6 +91,7 @@ BugBase takes in QIIME compatible OTU tables in the classic (.txt) or json versi
 - Closed reference OTU picking with the Greengenes 97% representative set
 - Do not include taxonomy if in the classic form (.txt)
 - Counts, not relative abundance
+- You can use OTU tables generated from many programs, such as [NINJA-OPS.](https://github.com/GabeAl/NINJA-OPS "NINJA") or [QIIME](http://qiime.org/ "qiime")
 
 Shotgun data:
 - Closed reference OTU picking with the IMG reference sequences
