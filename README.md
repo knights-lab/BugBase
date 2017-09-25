@@ -66,20 +66,21 @@ Required
 	-o	Output directory name
 	
 Optional
+	-m	Mapping file (tab-delimited text file)
+	-c	Map column header to plot by (which column denotes treatment groups)
 	-w	Data is shotgun metagenomic data (picked against IMG database)
 	-a 	Plot all samples (no stats will be run)
 	-x	Output prediction files only, no plots will be made
-	-m	Mapping file (tab-delimited text file)
-	-c	Map column header to plot by (which column denotes treatment groups)
 	-g 	Specify subset of groups in map column to plot (list, comma separated)
 	-z 	Data is of type continuous 
-	-C 	Use covariance instead of variance to determine thresholds
+	-C 	Use coefficient of variance instead of variance to determine thresholds
+	-l 	Centered log-ratio transform the data instead of using relative abundance
 	-t	Taxa level to plot OTU contributions by (number 1-7)
 	-T 	Specify a threshold to use for all traits (number 0-1)
 	-k 	Use the KEGG modules instead of default traits (Note: you must specify which modules!)
 	-p 	List modules or traits to predict (comma separated list, no spaces)
 	-u	Use a user-define trait table. Absolute file path must be specified
-	-l 	Centered log-ratio transform the data instead of using relative abundance
+	
 ```
 
 ### BugBase compatible OTU tables

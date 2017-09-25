@@ -141,7 +141,8 @@ if(isTRUE(opts$shotgun)){
   taxonomy <- paste(db_fp, "img_otu_taxonomy.txt.gz", sep='/') # shotgun_taxonomy.txt.gz
   if(isTRUE(opts$kegg)){
     trait_table <- paste(db_fp,
-      "kegg_module_shotgun.txt.gz", sep='/')
+      "WGS_KOs_precalculated.txt.gz", sep="/")
+      #"kegg_module_shotgun.txt.gz", sep='/')
       #"kegg_modules_img_precalculated.txt.gz", sep='/')
     if(!isTRUE(opts$predict)){
       if(is.null(opts$phenotype)){
