@@ -22,7 +22,7 @@
 # -u  Use a user-define trait table. Absolute file path must be specified
 # -k  Use the kegg pathways instead of default traits
 # -z 	Data is of type continuous 
-# -C 	Use coefficient of variance instead of variance to determine thresholds
+# -v 	Use variance instead of coefficient of variance to determine thresholds
 # -l  Center log transform the data instead of using relative abundance
 # -a 	Plot all samples (no stats will be run)
 # -x  Predict only. Not plots will be made, just results table
@@ -53,12 +53,12 @@ package_list <- c("optparse",
   "gridExtra", 
   "ggplot2", 
   "beeswarm", 
-   "plyr",
-   "RJSONIO",
-   "Matrix",
-   "labeling",
-   "digest",
-   "robCompositions")
+  "plyr",
+  "RJSONIO",
+  "Matrix",
+  "labeling",
+  "digest",
+  "robCompositions")
 
 #Set R package paths - This is to over come the lack of biom now available
 lib_location <- paste(my_env, "/R_lib", sep='/')
@@ -246,11 +246,11 @@ if(! is.null(test_trait)){
   test_trait <- test_trait
 }
 
-#Define metric for threshold calculations (variance is default)
+#Define metric for threshold calculations (coeff. of variance is default)
 use_cov <- opts$cov
-if(! isTRUE(use_cov)){
+if(!isTRUE(use_cov)){
   use_cov <- NULL
-}
+} 
 
 #Define RA or CLR transform
 clr_trans <- opts$clr_trans
@@ -340,20 +340,18 @@ if(isTRUE(opts$predict)){
   #   one with a mapping file, discrete
   if(isTRUE(opts$all)){
     #Required: predictions, clr_trans
-    plot.predictions.all(prediction_outputs$final_predictions, clr_trans)
+    plot.predictions.all(prediction_outputs$final_predictions)
   } else {
     if(isTRUE(opts$continuous)){
       #Required: predictions, map, map column, clr_trans
       plot.predictions.continuous(prediction_outputs$final_predictions, 
                                   loaded.inputs$map, 
-                                  loaded.inputs$map_column,
-                                  clr_trans)
+                                  loaded.inputs$map_column)
     } else {
       #Required: predictions, map, map column, clr_trans
       plot.predictions.discrete(prediction_outputs$final_predictions, 
                                 loaded.inputs$map, 
-                                loaded.inputs$map_column,
-                                clr_trans)
+                                loaded.inputs$map_column)
     }
   }
 
@@ -381,7 +379,8 @@ if(isTRUE(opts$predict)){
       #Required: otu contributions, normalized otu table, taxonomy
       otu.contributions.all.r(prediction_outputs$otus_contributing,
                             prediction_outputs$otu_table_subset,
-                            taxonomy, taxa_level)
+                            taxonomy, taxa_level,
+                            clr_trans)
     } else {
       #Required: otu contributions, normalized otu table, taxonomy
       #   map, map column, taxa_level
@@ -390,7 +389,8 @@ if(isTRUE(opts$predict)){
                         taxonomy, 
                         loaded.inputs$map, 
                         loaded.inputs$map_column,
-                        taxa_level)
+                        taxa_level,
+                        clr_trans)
     }
   }
 print("BugBase analysis complete")

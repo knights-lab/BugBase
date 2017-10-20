@@ -129,9 +129,9 @@
   #variances is trait x threshold
 
   if(is.null(use_cov)){
-    variances <- apply(prediction, c(2,3), function(xx) sd(xx)/mean(xx))
-  } else {
     variances <- apply(prediction, c(2,3), var)
+  } else {
+    variances <- apply(prediction, c(2,3), function(xx) sd(xx)/mean(xx))
   }
   rownames(variances) <- colnames(trait_table)
   colnames(variances) <- thresholds

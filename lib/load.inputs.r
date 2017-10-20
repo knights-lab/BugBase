@@ -114,8 +114,9 @@
     #Change singletons to 0 (needed for low depth OTU tables)
     otu_table[otu_table < 2] <- 0
 
-    #Filter the OTU table to keep OTUs in at least 5% of samples
-    otu_table <- otu_table[rowSums(otu_table > 0) > (0.05*ncol(otu_table)),]
+    ##Filter the OTU table to keep OTUs in at least 2 sample
+    otu_table <- otu_table[rowSums(otu_table > 0) > 2,]
+    #otu_table <- otu_table[rowSums(otu_table > 0) > (0.05*ncol(otu_table)),]
 
     #get indices of which rows to keep
     ix.keep <- map[,map_column] %in% groups

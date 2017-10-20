@@ -24,7 +24,7 @@ BugBase relies on R packages. When you are ready to try BugBase, the following R
 
 ### Installation
 #### Mac OS
-You can download BugBase here, and then add these paths to your `~/.bash_profile` file. This is what is in an example `~/.bash_profile` modification looks like:
+You can download BugBase here, and then add the paths to BugBase and the BugBase bin to your `~/.bash_profile` file. This is what is in an example `~/.bash_profile` modification looks like:
 
 ```
 export BUGBASE_PATH=/Path/to/my/BugBase

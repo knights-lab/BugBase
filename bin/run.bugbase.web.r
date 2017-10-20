@@ -40,8 +40,11 @@ library(gridExtra, lib.loc = lib_location)
 library(ggplot2, lib.loc = lib_location)
 library(beeswarm, lib.loc = lib_location)
 library(biom, lib.loc = lib_location)
+library(RJSONIO, lib.loc= lib_location) #
+library(Matrix, lib.loc= lib_location) #
 library(labeling, lib.loc = lib_location)
 library(digest, lib.loc = lib_location)
+library(robCompositions, lib.loc = lib_location) #
 library(methods)
 
 # Find functions in the lib
@@ -52,54 +55,56 @@ for (i in 1:length(r_funcs)){
 }
 
 option_list <- list(
-	make_option(c("-v", "--verbose"), action="store_true", default=TRUE,
-		help="Print extra output [default]"),
-	make_option(c("-i", "--otutable"), type="character", default=NULL,
-		help="otu table to plot [default %default]"),
-	make_option(c("-c", "--mapcolumn"), type="character", default=NULL,
-		help="column of mapping file to plot [default %default]"),
-	make_option(c("-m", "--mappingfile"), type="character", default=NULL,
-		help="mapping file to plot [default %default]"),
-	make_option(c("-o", "--output"), type="character", default=".",
-		help="output directory [default %default]"),
-	make_option(c("-t", "--taxalevel"), type="character", default=NULL,
-		help="taxa level to plot otu contributions by, default is 2 (phylum) 
-		[default %default]"),
-	make_option(c("-p", "--phenotype"), type="character", default=NULL,
-		help="specific traits (phenotypes) to predict, separated by commas, 
-		no spaces [default %default]"),
-	make_option(c("-x", "--predict"), action="store_true", default=FALSE,
-        help="only output the prediction table, do not make plots
-         [default %default]"),
-	make_option(c("-T", "--threshold"), type="character", default=NULL,
-		help="threshold to use, must be between 0 and 1 [default %default]"),
-	make_option(c("-g", "--groups"), type="character", default=NULL,
-		help="treatment groups of samples, separated by commas, no spaces 
-		[default %default]"),
-	make_option(c("-u", "--usertable"), type="character", default=NULL,
-	 help="user define trait table, absolute file path required [
-	 default %default]"),
-	make_option(c("-z", "--continuous"), action="store_true", default=FALSE,
-		help="plot continuous data [default %default]"),
-	make_option(c("-k", "--kegg"), action="store_true", default=FALSE,
-	   help="use kegg pathway table [default %default]"),
-	make_option(c("-C", "--cov"), action="store_true", default=FALSE,
-		help="use coefficient of variance instead of variance 
-		[default %default]"),
-	make_option(c("-a", "--all"), action="store_true", default=FALSE,
-		help="plot all samples without a mapping file (this outputs no 
-			statistics) [default %default]"),
-	make_option(c("-w", "--wgs"), action="store_true", default=FALSE,
-        help="Data is whole genome shotgun data 
-        (picked against IMG database) [default %default]")
-)
+  make_option(c("-v", "--verbose"), action="store_true", default=TRUE,
+              help="Print extra output [default]"),
+  make_option(c("-i", "--otutable"), type="character", default=NULL,
+              help="otu table to plot [default %default]"),
+  make_option(c("-c", "--mapcolumn"), type="character", default=NULL,
+              help="column of mapping file to plot [default %default]"),
+  make_option(c("-m", "--mappingfile"), type="character", default=NULL,
+              help="mapping file to plot [default %default]"),
+  make_option(c("-o", "--output"), type="character", default=".",
+              help="output directory [default %default]"),
+  make_option(c("-t", "--taxalevel"), type="character", default=NULL,
+              help="taxa level to plot otu contributions by, default is 
+              2 (phylum) [default %default]"),
+  make_option(c("-p", "--phenotype"), type="character", default=NULL,
+              help="specific traits (phenotypes) to predict, separated by 
+              commas, no spaces [default %default]"),
+  make_option(c("-x", "--predict"), action="store_true", default=FALSE,
+              help="only output the prediction table, do not make plots 
+              [default %default]"),
+  make_option(c("-T", "--threshold"), type="character", default=NULL,
+              help="threshold to use, must be between 0 and 1 
+              [default %default]"),
+  make_option(c("-g", "--groups"), type="character", default=NULL,
+              help="treatment groups of samples, separated by commas, no spaces 
+              [default %default]"),
+  make_option(c("-u", "--usertable"), type="character", default=NULL,
+              help="user define trait table, absolute file path required [
+              default %default]"),
+  make_option(c("-z", "--continuous"), action="store_true", default=FALSE,
+              help="plot continuous data [default %default]"),
+  make_option(c("-k", "--kegg"), action="store_true", default=FALSE,
+              help="use kegg pathway table [default %default]"),
+  make_option(c("-C", "--cov"), action="store_true", default=FALSE,
+              help="use coefficient of variance instead of variance [default %default]"),
+  make_option(c("-l", "--clr_trans"), action="store_true", default=FALSE,
+              help="use centered log-ratio transformation instead of relative abundance [default %default]"),
+  make_option(c("-a", "--all"), action="store_true", default=FALSE,
+              help="plot all samples without a mapping file (this outputs no 
+              statistics) [default %default]"),
+  make_option(c("-w", "--shotgun"), action="store_true", default=FALSE,
+              help="Data is metagenomic shotgun data 
+              (picked against RefSeq database) [default %default]")
+  )
 opts <- parse_args(OptionParser(option_list=option_list))
 
 # Define the database files
 db_fp <- paste(my_env, "/usr", sep='')
 
-#Check for WGS and KEGG
-if(isTRUE(opts$wgs)){
+#Check for shotgun and KEGG
+if(isTRUE(opts$shotgun)){
   copy_no_file <- paste(db_fp, "16S_13_5_precalculated.txt.gz", sep='/')
   taxonomy <- paste(db_fp, "img_otu_taxonomy.txt.gz", sep='/')
   if(isTRUE(opts$kegg)){
@@ -213,6 +218,12 @@ if(! isTRUE(use_cov)){
 	use_cov <- NULL
 }
 
+#Define RA or CLR transform
+clr_trans <- opts$clr_trans
+if(! isTRUE(clr_trans)){
+  clr_trans <- NULL
+}
+
 # Make output directories
 output <- opts$output
 if(output != "."){
@@ -235,8 +246,8 @@ print("Loading Inputs...")
 #Options: map, map column,groups
 loaded.inputs <- load.inputs(otu_table, map, mapcolumn, groups)
 
-if(isTRUE(opts$wgs)){
-  print("WGS specified, no copy number normalization will take place...")
+if(isTRUE(opts$shotgun)){
+  print("Shotgun specified, no copy number normalization will take place...")
 } else {
   print("16S copy number normalizing OTU table...")
   #16S copy normalize otu table
@@ -245,22 +256,28 @@ if(isTRUE(opts$wgs)){
   	loaded.inputs$otu_table, output)
 }
 
+if(isTRUE(clr_trans)){
+  print("Center log transforming OTU table...")
+}
+
 print("Predicting phenotypes...")
 #Make predictions
 #Required:trait table,  normalized otu table
 #Options: single trait, threshold, use cov
-if(isTRUE(opts$wgs)){
+if(isTRUE(opts$shotgun)){
   prediction_outputs <- single.cell.predictions(trait_table, 
                                                 loaded.inputs$otu_table, 
                                                 test_trait,
                                                 threshold_set,
-                                                use_cov)
+                                                use_cov, 
+                                                clr_trans)
 } else {
   prediction_outputs <- single.cell.predictions(trait_table, 
                                                 normalized_otus, 
                                                 test_trait,
                                                 threshold_set,
-                                                use_cov)
+                                                use_cov,
+                                                clr_trans)
 }
 
 if(isTRUE(opts$predict)){
@@ -272,12 +289,13 @@ if(isTRUE(opts$predict)){
   if(is.null(threshold_set)){
     if(isTRUE(opts$all)){
       #Required: predictions
-      plot.thresholds.all(prediction_outputs$predictions)
+      plot.thresholds.all(prediction_outputs$predictions, clr_trans)
     } else {
       #Required: predictions, map and map column
       plot.thresholds(prediction_outputs$predictions, 
                     loaded.inputs$map, 
-                    loaded.inputs$map_column)
+                    loaded.inputs$map_column, 
+                    clr_trans)
     }
   }
 
@@ -288,25 +306,27 @@ if(isTRUE(opts$predict)){
   #   one with a mapping file, discrete
   if(isTRUE(opts$all)){
     #Required: predictions
-    plot.predictions.all(prediction_outputs$final_predictions)
+    plot.predictions.all(prediction_outputs$final_predictions, clr_trans)
   } else {
     if(isTRUE(opts$continuous)){
       #Required: predictions, map, map column
       plot.predictions.continuous(prediction_outputs$final_predictions, 
                                   loaded.inputs$map, 
-                                  loaded.inputs$map_column)
+                                  loaded.inputs$map_column, 
+                                  clr_trans)
     } else {
       #Required: predictions, map, map column
       plot.predictions.discrete(prediction_outputs$final_predictions, 
                                 loaded.inputs$map, 
-                                loaded.inputs$map_column)
+                                loaded.inputs$map_column, 
+                                clr_trans)
     }
   }
 
   print("Plotting OTU contributions...")
   #Plot otu contributions (taxa summaries)
   #Two options, with a mapping file or without
-  if(isTRUE(opts$wgs)){
+  if(isTRUE(opts$shotgun)){
     if(isTRUE(opts$all)){
       #Required: otu contributions, normalized otu table, taxonomy
       otu.contributions.all.r(prediction_outputs$otus_contributing,
