@@ -99,6 +99,10 @@ def make_option_parser():
 		action="store_true",
 		default=False,
 		help="use coefficient of variance instead of variance")
+	parser.add_option("-l","--clr",
+		action="store_true",
+		default=False,
+		help="use centered log-ratio transformation instead of relative abundance")
 	parser.add_option("-k","--kegg",
 		action="store_true",
 		default=False,
@@ -194,6 +198,11 @@ if __name__ == '__main__':
 	else:
 		cov = ""
 
+	if options.clr is True:
+		clr = " -l"
+	else:
+		clr = ""
+
 	if options.kegg is True:
 		kegg = " -k"
 	else:
@@ -265,7 +274,7 @@ if __name__ == '__main__':
 	# Run the run.bugase.web.r script
 	
 	#cmd = "/soft/r/3.2.2/linux_x86_64_old/bin/Rscript /web/research/bugbase.cs.umn.edu/BugBase/bin/run.bugbase.web.r -h" 
-	cmd = "Rscript /web/research/bugbase.cs.umn.edu/BugBase/bin/run.bugbase.web.r" + otu_table + mapping + column + phenos + predict_only + taxa + groups + thres + plot_all + cov + kegg + wgs + continuous + output 
+	cmd = "Rscript /web/research/bugbase.cs.umn.edu/BugBase/bin/run.bugbase.web.r" + otu_table + mapping + column + phenos + predict_only + taxa + groups + thres + plot_all + cov + clr + kegg + wgs + continuous + output 
 	#cmd = "/soft/r/3.2.2/linux_x86_64_old/bin/Rscript /web/research/bugbase.cs.umn.edu/BugBase/bin/test.r" + otu_table + mapping + column + phenos + predict_only + taxa + groups + thres + plot_all + cov + kegg + wgs+ continuous + output
 	commands.append(cmd)
 	

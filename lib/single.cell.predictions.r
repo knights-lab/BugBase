@@ -73,14 +73,21 @@
   } else {
     #Convert any 0 to 0.65 to allow for CLR transform
     #Ref: Palarea-Albaladejo J, et al. 2014. JOURNAL OF CHEMOMETRICS. A bootstrap estimation scheme for chemical compositional data with nondetects. 28;7:585–599.
-    otu_table[otu_table == 0] <- 0.65
+    #otu_table[otu_table == 0] <- 0.65
     
     #Centered log-ratio transform for compositions
     #Ref: Gloor GB, et al. 2016. ANNALS OF EPIDEMIOLOGY. It's all relative: analyzing microbiome data as compositions. 26;5:322-329.
 
     #convert to samples as rows
     otu_table <- t(otu_table)
-    otu_table <- cenLR(otu_table)$x.clr   # Centered log-ratio transform for compositions 
+    #otu_table <- clr(otu_table)   # Centered log-ratio transform for compositions 
+    eps = 0.5
+    otu_table = otu_table*(1 - rowSums(otu_table==0)*eps/rowSums(otu_table))
+    otu_table[otu_table==0]=eps
+    otu_table = sweep(otu_table,1,rowSums(otu_table),'/')
+    ls = log(otu_table)
+    otu_table = ls - rowMeans(ls)
+    otu_table = otu_table[!is.nan(rowSums(otu_table)),]
   }
 
   #define which otus are in both tables

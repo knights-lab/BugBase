@@ -57,8 +57,7 @@ package_list <- c("optparse",
   "RJSONIO",
   "Matrix",
   "labeling",
-  "digest",
-  "robCompositions")
+  "digest")
 
 #Set R package paths - This is to over come the lack of biom now available
 lib_location <- paste(my_env, "/R_lib", sep='/')
@@ -346,12 +345,14 @@ if(isTRUE(opts$predict)){
       #Required: predictions, map, map column, clr_trans
       plot.predictions.continuous(prediction_outputs$final_predictions, 
                                   loaded.inputs$map, 
-                                  loaded.inputs$map_column)
+                                  loaded.inputs$map_column,
+                                  clr_trans)
     } else {
       #Required: predictions, map, map column, clr_trans
       plot.predictions.discrete(prediction_outputs$final_predictions, 
                                 loaded.inputs$map, 
-                                loaded.inputs$map_column)
+                                loaded.inputs$map_column,
+                                clr_trans)
     }
   }
 

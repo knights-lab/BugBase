@@ -43,8 +43,7 @@ library(biom, lib.loc = lib_location)
 library(RJSONIO, lib.loc= lib_location) #
 library(Matrix, lib.loc= lib_location) #
 library(labeling, lib.loc = lib_location)
-library(digest, lib.loc = lib_location)
-library(robCompositions, lib.loc = lib_location) #
+library(digest, lib.loc = lib_location) #
 library(methods)
 
 # Find functions in the lib
