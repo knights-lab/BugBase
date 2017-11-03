@@ -20,7 +20,6 @@ BugBase relies on R packages. When you are ready to try BugBase, the following R
 * Matrix
 * labeling
 * digest
-* robCompositions
 
 ### Installation
 #### Mac OS
