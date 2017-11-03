@@ -41,7 +41,7 @@ library(ggplot2, lib.loc = lib_location)
 library(beeswarm, lib.loc = lib_location)
 library(biom, lib.loc = lib_location)
 library(RJSONIO, lib.loc= lib_location) #
-library(Matrix, lib.loc= lib_location) #
+#library(Matrix, lib.loc= lib_location) #
 library(labeling, lib.loc = lib_location)
 library(digest, lib.loc = lib_location) #
 library(methods)
