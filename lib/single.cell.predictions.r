@@ -77,7 +77,9 @@
     
     #Centered log-ratio transform for compositions
     #Ref: Gloor GB, et al. 2016. ANNALS OF EPIDEMIOLOGY. It's all relative: analyzing microbiome data as compositions. 26;5:322-329.
-
+    #Multiplicative:
+    #Mart´ın-Fern´andez JA, et al. 2003. MATHEMATICAL GEOLOGY. Dealing With Zeros and Missing Values in Compositional Data Sets Using Nonparametric Imputation. 35;3:253-278. 
+    
     #convert to samples as rows
     otu_table <- t(otu_table)
     #otu_table <- clr(otu_table)   # Centered log-ratio transform for compositions 
