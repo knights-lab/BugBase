@@ -40,7 +40,7 @@
     cat("\nEither \'predict only\' or \'plot all\' specified. All samples will be predicted.\n")
 
     #Drop any samples with no OTUs
-    otu_table <- otu_table[,colSums(otu_table) > 1]
+    otu_table <- otu_table[,colSums(otu_table) > 1,drop=F]
 
     new_otu <- otu_table
     new_map <- NULL
