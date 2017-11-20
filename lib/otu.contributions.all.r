@@ -60,8 +60,12 @@
 	
 	#aggregate to the same taxa
 	#you must t() again, to have samples as columns
-	otu_table <- t(sapply(by(otu_table,rownames(otu_table),colSums),identity))
-	
+	if(ncol(otu_table) ==1){
+		otu_table <- t(t(sapply(by(otu_table,rownames(otu_table),colSums),identity)))
+	} else {
+		otu_table <- t(sapply(by(otu_table,rownames(otu_table),colSums),identity))
+	}
+
 	#set colors for plotting and legend creation
 	#get palette 1 from R ColorBrewer
 	cols <- colorRampPalette(brewer.pal(9,'Set1'))
@@ -88,22 +92,27 @@
 		# the trait
 		positive_otu_table <- t(sweep(t(otu_table1), 2, 
 									otus_contributing[,x],"*"))
-		
+
 		#add taxonomy as the rownames in the otu table
 		rownames(positive_otu_table) <- names_split[,taxa_level]
-  
+  		
 		#aggregate to the same taxa
 		#you must t() again, to have samples as columns
-		positive_otu_table <- t(sapply(by(positive_otu_table,
+		if(ncol(positive_otu_table) == 1){
+			positive_otu_table <- t(t(sapply(by(positive_otu_table,
+							rownames(positive_otu_table),colSums),identity)))
+		} else {
+			positive_otu_table <- t(sapply(by(positive_otu_table,
 							rownames(positive_otu_table),colSums),identity))
-	
+		}
+		
+
 		#melt the otu_table and collapse by Taxa
 		melted_otu_table <- melt(positive_otu_table)
 		colnames(melted_otu_table) <- c("Taxa", "SampleID", "Count")
 		melted_otu_table$SampleID <- as.factor(1)
 		taxa_collapsed <- ddply(melted_otu_table, .(Taxa, SampleID),summarize, 
 								Count = mean(Count))
-
 		#set value for cutoff (1/10 of the highest proportion)
 		max_abund <- max(taxa_collapsed$Count)
 		cutoff_val <- max_abund / 10
@@ -118,13 +127,13 @@
 		taxa_collapsed <- ddply(taxa_collapsed, .(Taxa, SampleID), 
 								Count = sum(Count))
 
-		taxa_list <- unique(taxa_collapsed$Taxa)
-		
+		taxa_list <- c(taxa_list, unique(taxa_collapsed$Taxa))
+
 		#make the plot
 		taxa_plot <- NULL
 		taxa_plot <- ggplot(taxa_collapsed, aes_string(x="SampleID",
 			y="Count", fill="Taxa")) + 
-			geom_bar(stat="identity", show_guide=FALSE) + 
+			geom_bar(stat="identity", show_guide=F) + 
 			labs(y = xlabel, x = "") +
 			theme_classic() +
 			theme(axis.text.x=element_blank(), axis.line.x = 
@@ -149,6 +158,7 @@
 
 	#subset to the taxa that met the cutoff
 	taxa_list <- unique(taxa_list)
+
 	cols_keep <- cols2[which(names(cols2) %in% taxa_list)]
 
 	#create a legend table with names, colors and coordinates

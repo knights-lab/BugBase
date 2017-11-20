@@ -339,7 +339,7 @@ if(isTRUE(opts$predict)){
   #   one with a mapping file, discrete
   if(isTRUE(opts$all)){
     #Required: predictions, clr_trans
-    plot.predictions.all(prediction_outputs$final_predictions)
+    plot.predictions.all(prediction_outputs$final_predictions,clr_trans)
   } else {
     if(isTRUE(opts$continuous)){
       #Required: predictions, map, map column, clr_trans

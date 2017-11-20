@@ -67,7 +67,12 @@
 
 	#aggregate to the same taxa
 	#you must t() again, to have samples as columns
-	otu_table <- t(sapply(by(otu_table,rownames(otu_table),colSums),identity))
+	if(ncol(otu_table)==1){
+		otu_table <- t(t(sapply(by(otu_table,rownames(otu_table),colSums),identity)))
+		} else {
+			otu_table <- t(sapply(by(otu_table,rownames(otu_table),colSums),identity))	
+		}
+	
 
 	#ensure same order of samples in map and otu table
 	map <- map[colnames(otu_table),,drop=F]
@@ -104,8 +109,13 @@
 	  
 		#aggregate to the same taxa
 		#you must t() again, to have samples as columns
-		positive_otu_table <- t(sapply(by(positive_otu_table,
-								rownames(positive_otu_table),colSums),identity))
+		if(ncol(positive_otu_table) == 1){
+			positive_otu_table <- t(t(sapply(by(positive_otu_table,
+							rownames(positive_otu_table),colSums),identity)))
+		} else {
+			positive_otu_table <- t(sapply(by(positive_otu_table,
+							rownames(positive_otu_table),colSums),identity))
+		}
 		
 		#ensure same order of samples in map and otu table
 		map <- map[colnames(positive_otu_table),,drop=F]
